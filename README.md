@@ -2,9 +2,9 @@
 
 Poorly-coded bot intended to be used in my and my friends' servers.
 
-Urban Dictionary term look-up,
-Memes from Reddit,
-NSFW commands,
+Urban Dictionary term look-up,  
+Memes from Reddit,  
+NSFW commands,  
 plus other goofy but also very useless commands.
 
 ## Installation
@@ -21,25 +21,25 @@ to install the required dependencies. Obviously, you need [node](https://nodejs.
 
 ## Set up
 
-Rename the `rename_me.json` file to `config.json`.
-Now, open it and fill out the required information:
-`token`: Your token
-`ownerID`: Your user ID
-`serverLogId`: A channel ID that the bot can use to display log information
+Rename the `rename_me.json` file to `config.json`.  
+Now, open it and fill out the required information:  
+`token`: Your token  
+`ownerID`: Your user ID  
+`serverLogId`: A channel ID that the bot can use to display log information  
 `serverLogIdDM`: If someone DMs something at the bot, the messages can display in that channel. You can use the same channel as the `serverLogId` if you want
 
-`redditCredentials`:
-This bot uses Reddit for memes and most NSFW commands. In order to set up Reddit for the bot:
--Proceed to [Authorized applications](https://reddit.com/prefs/apps/)
--Press the "Create an app" button
--Enter your application's name, its description and about and redirect uris
--Choose "script" in the list - that's important
--Press the "Create app" button
+`redditCredentials`:  
+This bot uses Reddit for memes and most NSFW commands. In order to set up Reddit for the bot:  
+-Proceed to [Authorized applications](https://reddit.com/prefs/apps/)  
+-Press the "Create an app" button  
+-Enter your application's name, its description and about and redirect uris  
+-Choose "script" in the list - that's important  
+-Press the "Create app" button  
 
-You will get the app's ID under the "personal use script" line and app's secret hash.
-So now, in `config.json`, you can fill the required Reddit information.
+You will get the app's ID under the "personal use script" line and app's secret hash.  
+So now, in `config.json`, you can fill the required Reddit information.  
 
-Run `index.js` to give life to the bot.
+Run `index.js` to give life to the bot.  
 
 Note: the `coinflip` command uses custom emotes. You can find them in the `custom emotes` folder but you will have to se them up by yourself in `coinflip.js`.
 
