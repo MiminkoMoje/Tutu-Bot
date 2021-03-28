@@ -5,6 +5,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+#pls ignore these too or i'll lose my mind
+config.json
+*.code-workspace
+
 # Runtime data
 pids
 *.pid
