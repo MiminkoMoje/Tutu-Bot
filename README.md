@@ -9,7 +9,7 @@ plus other goofy but also very useless commands.
 
 ## Installation
 
-If you want to see how and useless this bot is by yourself, you can clone this repo:
+If you want to see how useless this bot is by yourself, you can clone this repo:
 ```
 git clone https://github.com/MiminkoMoje/TutuBot.git
 ```
