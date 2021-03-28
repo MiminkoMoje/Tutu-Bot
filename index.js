@@ -1,13 +1,11 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-//const querystring = require('querystring');
 const { prefix, token, ownerId } = require('./config.json');
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const commandFolders = fs.readdirSync('./commands');
 
-//const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 
 for (const folder of commandFolders) {
@@ -65,11 +63,11 @@ client.on('message', message => {
                 "footer": {
                     "icon_url": message.author.avatarURL(),
                     "text": `${message.author.tag}`,
-                  },
+                },
             };
             return message.channel.send({ embed: bannedErrorMsg });
         }
-        
+
         if (command.disabled) {
             const disabledErrorMsg = {
                 "title": `Error`,
@@ -78,7 +76,7 @@ client.on('message', message => {
                 "footer": {
                     "icon_url": message.author.avatarURL(),
                     "text": `${message.author.tag}`,
-                  },
+                },
             };
             return message.channel.send({ embed: disabledErrorMsg });
         }
@@ -91,7 +89,7 @@ client.on('message', message => {
                 "footer": {
                     "icon_url": message.author.avatarURL(),
                     "text": `${message.author.tag}`,
-                  },
+                },
             };
             return message.channel.send({ embed: DMErrorMsg });
         }
@@ -108,7 +106,7 @@ client.on('message', message => {
                 "footer": {
                     "icon_url": message.author.avatarURL(),
                     "text": `${message.author.tag}`,
-                  },
+                },
             };
             return message.channel.send({ embed: nsfwOnlyErrorMsg });
         }
@@ -123,7 +121,7 @@ client.on('message', message => {
                     "footer": {
                         "icon_url": message.author.avatarURL(),
                         "text": `${message.author.tag}`,
-                      },
+                    },
                 };
                 return message.channel.send({ embed: PermErrorMsg });
             }
@@ -140,7 +138,7 @@ client.on('message', message => {
             "footer": {
                 "icon_url": message.author.avatarURL(),
                 "text": `${message.author.tag}`,
-              },
+            },
         };
         return message.channel.send({ embed: FatalErrorMsg });
     }
