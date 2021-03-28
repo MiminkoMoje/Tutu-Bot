@@ -1,11 +1,9 @@
 const fetch = require('node-fetch');
+
 module.exports = {
     name: 'cat',
     aliases: ['kitty', 'pussy', 'kitten', 'meow'],
     description: 'Shows a random picture of a cat.',
-    //guildOnly: true,
-    //permissions: 'ADMINISTRATOR',
-    //disabled: true,
     async execute(message) {
         const { file } = await fetch('https://aws.random.cat/meow').then(response => response.json());
         const embed = {

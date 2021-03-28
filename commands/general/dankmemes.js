@@ -6,9 +6,6 @@ module.exports = {
     name: 'dankmemes',
     aliases: ['dm', 'meme', 'memes', 'dank'],
     description: 'Shows random post of r/dankmemes.',
-    guildOnly: false,
-    nsfwDisable: false,
-    nsfwCommand: false,
     async execute(message) {
         const reddit = new RandomReddit({
             username: redditCredentials.username,
@@ -16,7 +13,7 @@ module.exports = {
             app_id: redditCredentials.app_id,
             api_secret: redditCredentials.api_secret,
             logs: false
-          });
+        });
 
         const post = await reddit.getImage('dankmemes')
         const embed = {

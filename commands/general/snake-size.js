@@ -3,7 +3,6 @@ module.exports = {
 	aliases: ['snake', 'dick', 'penis', 'snake', 'sneik', 'cock'],
 	description: 'Exposes your or your friends\' penis size.',
 	guildOnly: true,
-	//permissions: 'ADMINISTRATOR',
 	execute(message, args) {
 		const size = Math.floor(Math.random() * 15) + 1
     const rare_size = Math.floor(Math.random() * 100) + 1

@@ -2,8 +2,6 @@ module.exports = {
     name: 'coinflip',
     aliases: ['cf', 'coin'],
     description: 'Flips a coin.',
-    //guildOnly: true,
-    //permissions: 'ADMINISTRATOR',
     execute(message) {
         const coin_mark = Math.floor(Math.random() * 2) + 1
         const rare_coin_mark = Math.floor(Math.random() * 200) + 1

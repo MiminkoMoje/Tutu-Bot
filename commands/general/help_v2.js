@@ -1,11 +1,7 @@
 module.exports = {
     name: 'help',
-    //aliases: ['icon', 'pfp'],
     description: 'Shows the available commands.',
-    //guildOnly: true,
-    //permissions: 'ADMINISTRATOR',
     execute(message, args) {
-
         if (args[0] === 'nsfw' && args[1] === 'old') {
             const nsfw_deprecated = {
                 "title": `Deprecated NSFW Commands`,
