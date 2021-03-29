@@ -1,5 +1,5 @@
 const { RandomReddit } = require('random-reddit');
-const reddittitle = require('random-reddit');
+const rInfo = require('random-reddit');
 const { redditCredentials } = require(`${require.main.path}/config.json`);
 
 module.exports = {
@@ -17,11 +17,11 @@ module.exports = {
 
         const post = await reddit.getImage('dankmemes')
         const embed = {
-            "title": reddittitle.title,
+            "title": rInfo.title,
             "color": 8340223,
             "footer": {
                 "icon_url": message.author.avatarURL(),
-                "text": `Requested by ${message.author.tag} 💜 | r/dankmemes`,
+                "text": `Requested by ${message.author.tag} 💜 | by ${rInfo.author} in ${rInfo.subreddit}`,
             },
             "image": {
                 "url": post

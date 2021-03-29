@@ -1,6 +1,7 @@
 const { RandomReddit } = require('random-reddit')
-const reddittitle = require('random-reddit')
+const rInfo = require('random-reddit')
 const { redditCredentials } = require(`${require.main.path}/config.json`);
+require('./nsfw-command.js')();
 
 module.exports = {
   name: 'rule34',
@@ -19,6 +20,6 @@ module.exports = {
     });
 
     const post = await reddit.getImage('rule34')
-    message.channel.send(`Tutu well, **${message.author.tag}** 💜\n${post}\n**${reddittitle.title}**`)
+    nsfwCommand(message, message.author.tag, post, rInfo.title, rInfo.author, rInfo.subreddit)
   },
 };

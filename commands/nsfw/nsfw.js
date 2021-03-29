@@ -1,6 +1,7 @@
 const { RandomReddit } = require('random-reddit')
-const reddittitle = require('random-reddit')
+const rInfo = require('random-reddit')
 const { redditCredentials } = require(`${require.main.path}/config.json`);
+require('./nsfw-command.js')();
 
 module.exports = {
   name: 'nsfw',
@@ -18,7 +19,7 @@ module.exports = {
       logs: false
     });
 
-    var subreddit_nsfw = [
+    var subreddits = [
         'nsfwhardcore',
         'nsfw',
         'NSFW_GIF',
@@ -29,7 +30,7 @@ module.exports = {
         'porn'
     ]
     
-    const post = await reddit.getImage(subreddit_nsfw)
-    message.channel.send(`Tutu well, **${message.author.tag}** 💜\n${post}\n**${reddittitle.title}**`)
+    const post = await reddit.getImage(subreddits)
+    nsfwCommand(message, message.author.tag, post, rInfo.title, rInfo.author, rInfo.subreddit)
   },
 };

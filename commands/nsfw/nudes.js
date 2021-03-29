@@ -1,6 +1,7 @@
 const { RandomReddit } = require('random-reddit')
-const reddittitle = require('random-reddit')
+const rInfo = require('random-reddit')
 const { redditCredentials } = require(`${require.main.path}/config.json`);
+require('./nsfw-command.js')();
 
 module.exports = {
     name: 'nudes',
@@ -20,11 +21,11 @@ module.exports = {
 
         const post = await reddit.getImage('Nude_Selfie')
         const embed = {
-            "title": reddittitle.title,
+            "title": rInfo.title,
             "color": 8340223,
             "footer": {
                 "icon_url": message.author.avatarURL(),
-                "text": `Requested by ${message.author.tag} 💜 | Tutu well! | r/Nude_Selfie`,
+                "text": `Requested by ${message.author.tag} 💜 | Tutu well! | by ${rInfo.author} in ${rInfo.subreddit}`,
             },
             "image": {
                 "url": post
