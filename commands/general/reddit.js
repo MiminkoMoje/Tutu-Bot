@@ -1,5 +1,5 @@
 const { RandomReddit } = require('random-reddit');
-const reddittitle = require('random-reddit');
+const rInfo = require('random-reddit');
 const { redditCredentials } = require(`${require.main.path}/config.json`);
 
 module.exports = {
@@ -30,7 +30,7 @@ module.exports = {
       return message.channel.send({ embed: ErrorMsg });
     }
     const post = await reddit.getImage(args[0])
-    message.channel.send(`**${reddittitle.title}**\n${post}`)
+    message.channel.send(`${post}\n**${rInfo.title}**\n*by ${rInfo.author} in ${rInfo.subreddit}*`)
   },
 };
 
