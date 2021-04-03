@@ -60,7 +60,7 @@ module.exports = {
     if (!list.length) {
       const noResErrorMsg = {
         "title": `Error`,
-        "description": `No results found for *${args.join(' ')}*.`,
+        "description": `No results found for *${args.join(' ').trimStart()}*.`,
         "color": 8340223,
         "footer": {
           "icon_url": message.author.avatarURL(),
@@ -179,7 +179,7 @@ module.exports = {
     message.channel.send({ embed });
 
     //if both result and example were big, we put the rest in this embed after we cut them above
-    //as i said above, this is a shit way to do that. hopefully i will manage to make a better way some day.
+    //as i said above, this is a shit way to do that. hopefully i (or u) will manage to make a better way some day.
     if (uResult.length > 1020 && uExample.length > 1020) {
       const embed4 = {
         "title": uTerm,
