@@ -29,7 +29,7 @@ Now, open it and fill out the required information:
 `serverLogIdDM`: If someone DMs something at the bot, the messages can display in that channel. You can use the same channel as the `serverLogId` if you want
 
 `redditCredentials`:  
-This bot uses Reddit for memes and most NSFW commands. In order to set up Reddit for the bot:  
+This bot uses Reddit for some commands and most of the NSFW ones. In order to set up Reddit for the bot:  
 -Proceed to [Authorized applications](https://reddit.com/prefs/apps/)  
 -Press the "Create an app" button  
 -Enter your application's name, its description and about and redirect uris  
@@ -42,6 +42,10 @@ So now, in `config.json`, you can fill the required Reddit information.
 Run `index.js` to give life to the bot.  
 
 Note: the `coinflip` command uses custom emotes. You can find them in the `custom emotes` folder but you will have to se them up by yourself in `coinflip.js`.
+
+## Can/Should I contribute?
+
+PLEASE feel free to. I'd love to see how my code can be improved and would totally help me learn for the future. Or if you have any ideas for new commands, I'd love to see them. Or anything really. Just help pls thx.
 
 ## So what's next?
 
