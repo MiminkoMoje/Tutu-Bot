@@ -28,11 +28,17 @@ for (const file of eventFiles) {
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.username}!`)
     client.user.setActivity('you fail at life | ,help', { type: 'WATCHING' })
+    global.tutuColor = 8340223
     global.nsfwErrorMsg = {
         "title": `Error`,
         "description": `The NSFW commands are disabled for this server. Please contact <@${ownerId}> if you want them enabled.`,
         "color": 8340223,
     };
+    global.genErrorMsg = {
+        "title": `Error`,
+        "description": `An error occured, please try again.`,
+        "color": 8340223,
+    }
     global.nsfwDisableID = [ //Add guild IDs to disable the bot for
         '614631355694710795',
         //'436952826380288010'
