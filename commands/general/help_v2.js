@@ -14,31 +14,31 @@ module.exports = {
                 "fields": [
                     {
                         "name": ",blowjob-deprecated",
-                        "value": `So... yes head?`
+                        "value": `Blowjob`
                     },
                     {
                         "name": ",boobs-deprecated",
-                        "value": `Don't squeeze too hard (i cringed so much while typing this)`
+                        "value": `Boobs`
                     },
                     {
                         "name": ",girlsolo",
-                        "value": `I promise it's a horny girl`
+                        "value": `Girl`
                     },
                     {
                         "name": ",girlsolo gif",
-                        "value": `Because still images suck`
+                        "value": `Gif girl`
                     },
                     {
                         "name": ",hentai-deprecated",
-                        "value": `Imagine getting turned on by hentai`
+                        "value": `Hentai`
                     },
                     {
                         "name": ",hentai-deprecated gif",
-                        "value": `Maximises the possibility of getting turned on by hentai`
+                        "value": `Gif hentai`
                     },
                     {
                         "name": ",lesbian-deprecated",
-                        "value": `Lesbian good`
+                        "value": `Lesbian`
                     },
                 ]
             };
