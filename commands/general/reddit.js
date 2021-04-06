@@ -86,7 +86,6 @@ module.exports = {
                 message.channel.send(`${image}\n**${post.title}**\n*by u/${post.author.name} in ${post.subreddit_name_prefixed}*`)
             }
         }
-        console.log(post)
     },
 };
 
