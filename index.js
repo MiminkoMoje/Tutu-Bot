@@ -29,16 +29,12 @@ client.once('ready', () => {
     console.log(`Logged in as ${client.user.username}!`)
     client.user.setActivity('you fail at life | ,help', { type: 'WATCHING' })
     global.tutuColor = 8340223
+    global.errorColor = 16724787
     global.nsfwErrorMsg = {
         "title": `Error`,
         "description": `The NSFW commands are disabled for this server. Please contact <@${ownerId}> if you want them enabled.`,
-        "color": 8340223,
+        "color": errorColor,
     };
-    global.genErrorMsg = {
-        "title": `Error`,
-        "description": `An error occured, please try again.`,
-        "color": 8340223,
-    }
     global.nsfwDisableID = [ //Add guild IDs to disable the bot for
         '614631355694710795',
         //'436952826380288010'
@@ -65,7 +61,7 @@ client.on('message', message => {
             const bannedErrorMsg = {
                 "title": `Error`,
                 "description": `You have been banned from using this bot.`,
-                "color": 8340223,
+                "color": errorColor,
                 "footer": {
                     "icon_url": message.author.avatarURL(),
                     "text": `${message.author.tag}`,
@@ -78,7 +74,7 @@ client.on('message', message => {
             const disabledErrorMsg = {
                 "title": `Error`,
                 "description": `This command is disabled.`,
-                "color": 8340223,
+                "color": errorColor,
                 "footer": {
                     "icon_url": message.author.avatarURL(),
                     "text": `${message.author.tag}`,
@@ -91,7 +87,7 @@ client.on('message', message => {
             const DMErrorMsg = {
                 "title": `Error`,
                 "description": `You can't use this command in DMs.`,
-                "color": 8340223,
+                "color": errorColor,
                 "footer": {
                     "icon_url": message.author.avatarURL(),
                     "text": `${message.author.tag}`,
@@ -108,7 +104,7 @@ client.on('message', message => {
             const nsfwOnlyErrorMsg = {
                 "title": `Error`,
                 "description": `This command can only be used in NSFW channels.`,
-                "color": 8340223,
+                "color": errorColor,
                 "footer": {
                     "icon_url": message.author.avatarURL(),
                     "text": `${message.author.tag}`,
@@ -123,7 +119,7 @@ client.on('message', message => {
                 const PermErrorMsg = {
                     "title": `Error`,
                     "description": `You do not have permission to use this command.`,
-                    "color": 8340223,
+                    "color": errorColor,
                     "footer": {
                         "icon_url": message.author.avatarURL(),
                         "text": `${message.author.tag}`,
@@ -140,7 +136,7 @@ client.on('message', message => {
         const FatalErrorMsg = {
             "title": `Error`,
             "description": `An error occured trying to execute that command! Please contact <@${ownerId}>.`,
-            "color": 8340223,
+            "color": errorColor,
             "footer": {
                 "icon_url": message.author.avatarURL(),
                 "text": `${message.author.tag}`,
