@@ -15,7 +15,7 @@ module.exports = {
         const cf1 = {
             "title": `Coinflip`,
             "description": `<a:coinflip:814472899053617222>`, //emoji: coin spinning
-            "color": 8340223,
+            "color": tutuColor,
             "footer": {
                 "icon_url": message.author.avatarURL(),
                 "text": `Requested by ${message.author.tag} 💜`,
@@ -24,7 +24,7 @@ module.exports = {
           const cf2 = {
             "title": `Coinflip`,
             "description": `<:coin:822095847050969118> ` + coin, //emoji: coin
-            "color": 8340223,
+            "color": tutuColor,
             "footer": {
                 "icon_url": message.author.avatarURL(),
                 "text": `Requested by ${message.author.tag} 💜`,

@@ -1,8 +1,8 @@
 const fetch = require('node-fetch');
 const querystring = require('querystring');
 
-  //TODO: create a favorite feature so the user can save fav definitions
-  //maybe create a ,next command so the user can see the next result without having to retype the whole command again
+//TODO: create a favorite feature so the user can save fav definitions
+//maybe create a ,next command so the user can see the next result without having to retype the whole command again
 
 module.exports = {
   name: 'urban',
@@ -24,7 +24,7 @@ module.exports = {
       const noTermErrorMsg = {
         "title": `Error`,
         "description": `You need to supply a search term.`,
-        "color": 8340223,
+        "color": errorColor,
         "footer": {
           "icon_url": message.author.avatarURL(),
           "text": `${message.author.tag}`,
@@ -44,7 +44,7 @@ module.exports = {
         const numErrorMsg = {
           "title": `Error`,
           "description": `Only numbers from 1 to 10 are allowed.`,
-          "color": 8340223,
+          "color": errorColor,
           "footer": {
             "icon_url": message.author.avatarURL(),
             "text": `${message.author.tag}`,
@@ -58,16 +58,16 @@ module.exports = {
     var query = querystring.stringify({ term: args.join(' ') }).trimStart();
     const { list } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
     if (!list.length) {
-      const noResErrorMsg = {
+      const noResultsMsg = {
         "title": `Error`,
-        "description": `No results found for *${args.join(' ').trimStart()}*.`,
-        "color": 8340223,
+        "description": `No results found.`,
+        "color": errorColor,
         "footer": {
           "icon_url": message.author.avatarURL(),
           "text": `${message.author.tag}`,
         },
       };
-      return message.channel.send({ embed: noResErrorMsg });
+      return message.channel.send({ embed: noResultsMsg });
     }
 
     //uEnd is used for an error message below
@@ -88,7 +88,7 @@ module.exports = {
       const noResNumErrorMsg = {
         "title": `Error`,
         "description": `There is no ${i + 1}${uEnd} definition of *${args.join(' ').trimStart()}*.`,
-        "color": 8340223,
+        "color": errorColor,
         "footer": {
           "icon_url": message.author.avatarURL(),
           "text": `${message.author.tag}`,
@@ -156,7 +156,7 @@ module.exports = {
     const embed = {
       "title": uTerm,
       "url": uUrl, //clicking the url goes to the definition in urban dict.
-      "color": 8340223, //tutu purple
+      "color": tutuColor, //tutu purple
       "footer": {
         "icon_url": message.author.avatarURL(),
         "text": `Requested by ${message.author.tag} 💜 | ${i + 1}/10`, //number of the result that is appearing out of 10 potential results
@@ -184,7 +184,7 @@ module.exports = {
       const embed4 = {
         "title": uTerm,
         "url": uUrl,
-        "color": 8340223,
+        "color": tutuColor,
         "footer": {
           "icon_url": message.author.avatarURL(),
           "text": `Requested by ${message.author.tag} 💜 | ${i + 1}/10`,
@@ -208,7 +208,7 @@ module.exports = {
       const embed2 = {
         "title": uTerm,
         "url": uUrl,
-        "color": 8340223,
+        "color": tutuColor,
         "footer": {
           "icon_url": message.author.avatarURL(),
           "text": `Requested by ${message.author.tag} 💜 | ${i + 1}/10`,
@@ -228,7 +228,7 @@ module.exports = {
       const embed3 = {
         "title": uTerm,
         "url": uUrl,
-        "color": 8340223,
+        "color": tutuColor,
         "footer": {
           "icon_url": message.author.avatarURL(),
           "text": `Requested by ${message.author.tag} 💜 | ${i + 1}/10`,

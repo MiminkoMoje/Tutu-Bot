@@ -18,7 +18,7 @@ module.exports = {
         const post = await reddit.getImage('dankmemes')
         const embed = {
             "title": rInfo.title,
-            "color": 8340223,
+            "color": tutuColor,
             "footer": {
                 "icon_url": message.author.avatarURL(),
                 "text": `Requested by ${message.author.tag} 💜 | by ${rInfo.author} in ${rInfo.subreddit}`,

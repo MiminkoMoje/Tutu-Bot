@@ -7,7 +7,7 @@ module.exports = {
     async execute(message) {
         const { file } = await fetch('https://aws.random.cat/meow').then(response => response.json());
         const embed = {
-            "color": 8340223,
+            "color": tutuColor,
             "footer": {
                 "icon_url": message.author.avatarURL(),
                 "text": `Requested by ${message.author.tag} 💜 | meow`,
