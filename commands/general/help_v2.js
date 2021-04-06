@@ -6,7 +6,7 @@ module.exports = {
             const nsfw_deprecated = {
                 "title": `Deprecated NSFW Commands`,
                 "description": `These are old and unsupported NSFW commands based on the NekoClient. They have been replaced with the new Reddit-based commands: **,help nsfw**.`,
-                "color": 8340223,
+                "color": errorColor,
                 "footer": {
                     "icon_url": message.author.avatarURL(),
                     "text": `Requested by ${message.author.tag} 💜`,
@@ -50,7 +50,7 @@ module.exports = {
             const nsfw = {
                 "title": `NSFW Commands`,
                 "description": `You don't have to go to horny jail anymore`,
-                "color": 8340223,
+                "color": tutuColor,
                 "footer": {
                     "icon_url": message.author.avatarURL(),
                     "text": `Requested by ${message.author.tag} 💜`,
@@ -114,7 +114,7 @@ module.exports = {
             const commands = {
                 "title": `Commands`,
                 "description": `These are the available commands for now, new ones getting added frequently.`,
-                "color": 8340223,
+                "color": tutuColor,
                 "footer": {
                     "icon_url": message.author.avatarURL(),
                     "text": `Requested by ${message.author.tag} 💜`,
@@ -123,6 +123,10 @@ module.exports = {
                     {
                         "name": ",help",
                         "value": `This command eliminates racism and brings you good luck for 8.2 years`
+                    },
+                    {
+                        "name": ",reddit [subreddit]",
+                        "value": `Shows a random submission from a subreddit`
                     },
                     {
                         "name": ",urban [term]",
