@@ -13,7 +13,15 @@ module.exports = {
             username: redditCredentials.username,
             password: redditCredentials.password
         });
-
+        const noResultsMsg = {
+            "title": `Error`,
+            "description": `No results found.`,
+            "color": errorColor,
+            "footer": {
+                "icon_url": message.author.avatarURL(),
+                "text": `${message.author.tag}`,
+            },
+        };
         if (!args[0]) {
             const ErrorMsg = {
                 "title": `Error`,
@@ -26,16 +34,15 @@ module.exports = {
             };
             return message.channel.send({ embed: ErrorMsg });
         }
-
         var post;
-
         try {
             post = await r.getSubmission(args[0]).fetch();
         } catch (err) {
-            post = await r.getRandomSubmission(args[0]);
-        }
-        if (!post.title) {
-            return message.channel.send({ embed: noResultsMsg });
+            try {
+                post = await r.getRandomSubmission(args[0]);
+            } catch (err) {
+                return message.channel.send({ embed: noResultsMsg });
+            }
         }
         if (post.over_18 === true && !message.channel.nsfw) {
             const rNsfw = {
@@ -59,7 +66,11 @@ module.exports = {
             var hasUrl = true
         }
         if (hasTxt === true) {
-            const size = subText.length / 2040;
+            try {
+                var size = subText.length / 2040;
+            } catch (err) {
+                return message.channel.send({ embed: noResultsMsg });
+            }
             for (let i = 0; i < size; i++) {
                 const rSubmission = {
                     "title": post.title,
