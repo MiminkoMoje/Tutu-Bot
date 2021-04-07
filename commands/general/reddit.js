@@ -35,15 +35,31 @@ module.exports = {
             return message.channel.send({ embed: ErrorMsg });
         }
         var post;
-        try {
-            post = await r.getSubmission(args[0]).fetch();
-        } catch (err) {
+
+        if (args[1] === 's' || args[1] === 'sub' || args[1] === 'subreddit') {
             try {
                 post = await r.getRandomSubmission(args[0]);
             } catch (err) {
                 return message.channel.send({ embed: noResultsMsg });
             }
+        } else if (args[1] === 'id' || args[1] === 'i') {
+            try {
+                post = await r.getSubmission(args[0]).fetch();
+            } catch (err) {
+                return message.channel.send({ embed: noResultsMsg });
+            }
+        } else {
+            try {
+                post = await r.getSubmission(args[0]).fetch();
+            } catch (err) {
+                try {
+                    post = await r.getRandomSubmission(args[0]);
+                } catch (err) {
+                    return message.channel.send({ embed: noResultsMsg });
+                }
+            }
         }
+
         if (post.over_18 === true && !message.channel.nsfw) {
             const rNsfw = {
                 "title": `Error`,
