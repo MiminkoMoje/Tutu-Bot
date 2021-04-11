@@ -57,7 +57,8 @@ module.exports = {
     //connect the args with spaces and use urban dictionary api to search the query. show error if not found
     var query = querystring.stringify({ term: args.join(' ') }).trimStart();
     const { list } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
-    if (!list.length) {
+    try {
+      if (!list.length) {
       const noResultsMsg = {
         "title": `Error`,
         "description": `No results found.`,
@@ -69,6 +70,19 @@ module.exports = {
       };
       return message.channel.send({ embed: noResultsMsg });
     }
+    } catch (error) {
+      const queryError = {
+        "title": `Error`,
+        "description": `There is an error with this definition. Sorry for the inconvience.`,
+        "color": errorColor,
+        "footer": {
+          "icon_url": message.author.avatarURL(),
+          "text": `${message.author.tag}`,
+        },
+      };
+      return message.channel.send({ embed: queryError });
+    }    
+    
 
     //uEnd is used for an error message below
     if (i + 1 === 1) {
