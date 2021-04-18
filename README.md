@@ -7,6 +7,8 @@ Memes from Reddit,
 NSFW commands,  
 plus other goofy but also very useless commands.
 
+Add the Tutu Bot to your Discord server by visiting my [Tutu Bot Website](https://vasi.epizy.com). Keep in mind that the bot isn't always running. If you want to host the bot by yourself, make changes or contribute, read below.
+
 ## Installation
 
 If you want to see how useless this bot is by yourself, you can clone this repo:
