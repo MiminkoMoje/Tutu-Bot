@@ -83,3 +83,6 @@ typings/
 
 # FuseBox cache
 .fusebox/
+
+#Used for personal purposes
+events/message.js
