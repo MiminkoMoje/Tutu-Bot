@@ -2,8 +2,6 @@
 	"prefix": ",",
 	"token": "your_token_here",
 	"ownerId": "your_ID",
-	"serverLogId": "log_channel_ID",
-	"serverLogIdDM": "log_channel_ID_for_dms",
 	"redditCredentials": {
 		"username": "reddit_username",
 		"password": "reddit_password",
