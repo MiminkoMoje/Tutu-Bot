@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const { prefix, token, ownerId } = require('./config.json');
+const { prefix, token, ownerId, nsfwDisableGuildID, bannedUserID } = require('./config.json');
 require(`${require.main.path}/events/embeds.js`)();
 
 const client = new Discord.Client();
@@ -31,13 +31,6 @@ client.once('ready', () => {
     client.user.setActivity('for ,help', { type: 'WATCHING' })
     global.tutuColor = 8340223
     global.errorColor = 16724787
-    global.nsfwDisableID = [ //Add guild IDs to disable the nsfw commands for
-        '614631355694710795',
-    ]
-    global.bannedID = [ //Add user IDs to "ban" them from using the bot
-        '456431947183554560',
-        '829636194342010891'
-    ]
 });
 
 client.on('message', message => {
@@ -53,7 +46,7 @@ client.on('message', message => {
     if (!command) return;
 
     try {
-        if (bannedID.includes(message.author.id)) {
+        if (bannedUserID.includes(message.author.id)) {
             const errorMsg = `You have been banned from using this bot.`
             return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
         }
@@ -67,7 +60,7 @@ client.on('message', message => {
             return errorGuildOnly(message, message.author.avatarURL(), message.author.tag)
         }
 
-        if (command.nsfwDisable && nsfwDisableID.includes(message.guild.id)) {
+        if (command.nsfwDisable && nsfwDisableGuildID.includes(message.guild.id)) {
             const errorMsg = `The NSFW commands are disabled for this server. Please contact <@${ownerId}> if you want them enabled.`
             return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
         }
