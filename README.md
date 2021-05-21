@@ -5,9 +5,9 @@ Poorly-coded bot intended to be used in my and my friends' servers.
 Urban Dictionary term look-up,  
 Memes from Reddit,  
 NSFW commands,  
-plus other goofy but also very useless commands.
+plus other goofy but also very useless commands.  
 
-Add the Tutu Bot to your Discord server by visiting my [Tutu Bot Website](https://vasi.epizy.com/tutu). Keep in mind that the bot isn't always running. If you want to host the bot by yourself, make changes or contribute, read below.
+Add the Tutu Bot to your Discord server by visiting my [Tutu Bot Website](https://imvasi.com/tutu). Keep in mind that the bot isn't always running. If you want to host the bot by yourself, make changes or contribute, read below.
 
 ## Installation
 
@@ -27,8 +27,6 @@ Rename the `rename_me.json` file to `config.json`.
 Now, open it and fill out the required information:  
 `token`: Your token  
 `ownerID`: Your user ID  
-`serverLogId`: A channel ID that the bot can use to display log information  
-`serverLogIdDM`: If someone DMs something at the bot, the messages can display in that channel. You can use the same channel as the `serverLogId` if you want
 
 `redditCredentials`:  
 This bot uses Reddit for some commands and most of the NSFW ones. In order to set up Reddit for the bot:  
