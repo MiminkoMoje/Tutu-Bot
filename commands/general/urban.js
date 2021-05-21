@@ -1,12 +1,11 @@
 const fetch = require('node-fetch');
 const querystring = require('querystring');
-
-//TODO: create a favorite feature so the user can save fav definitions
-//maybe create a ,next command so the user can see the next result without having to retype the whole command again
+const Discord = require('discord.js');
+require(`${require.main.path}/events/embeds.js`)();
 
 module.exports = {
   name: 'urban',
-  aliases: ['ud', 'disctionary', 'uds', 'urban-disctionary', 'definition'],
+  aliases: ['ud', 'uds', 'urbandictionary', 'urban-dictionary', 'udict', 'udictionary', 'urband', 'urbandict'],
   description: 'Shows the Urban Definition of your query.',
 
   //first version: May/June 2020
@@ -21,16 +20,8 @@ module.exports = {
 
     //stop here and show error if user didn't include any query
     if (!args.length) {
-      const noTermErrorMsg = {
-        "title": `Error`,
-        "description": `You need to supply a search term.`,
-        "color": errorColor,
-        "footer": {
-          "icon_url": message.author.avatarURL(),
-          "text": `${message.author.tag}`,
-        },
-      };
-      return message.channel.send({ embed: noTermErrorMsg });
+      const errorMsg = `You need to supply a search term.`
+      return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
     }
 
     var i = 0 //in case user didn't include a result number with their query, we pre define it here (0 = 1st result)
@@ -41,16 +32,8 @@ module.exports = {
         var i = args[0] - 1
         delete args[0] //we delete the result number and we only keep the query
       } else {
-        const numErrorMsg = {
-          "title": `Error`,
-          "description": `Only numbers from 1 to 10 are allowed.`,
-          "color": errorColor,
-          "footer": {
-            "icon_url": message.author.avatarURL(),
-            "text": `${message.author.tag}`,
-          },
-        };
-        return message.channel.send({ embed: numErrorMsg });//for some reason the api only fetches 10 results. fuck that.
+        const errorMsg = `Only numbers from 1 to 10 are allowed.`
+        return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag) //for some reason the api only fetches 10 results. fuck that.
       }
     }
 
@@ -59,63 +42,38 @@ module.exports = {
     const { list } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
     try {
       if (!list.length) {
-      const noResultsMsg = {
-        "title": `Error`,
-        "description": `No results found.`,
-        "color": errorColor,
-        "footer": {
-          "icon_url": message.author.avatarURL(),
-          "text": `${message.author.tag}`,
-        },
-      };
-      return message.channel.send({ embed: noResultsMsg });
-    }
+        return errorNoResults(message, message.author.avatarURL(), message.author.tag)
+      }
     } catch (error) {
-      const queryError = {
-        "title": `Error`,
-        "description": `There is an error with this definition. Sorry for the inconvience.`,
-        "color": errorColor,
-        "footer": {
-          "icon_url": message.author.avatarURL(),
-          "text": `${message.author.tag}`,
-        },
-      };
-      return message.channel.send({ embed: queryError });
-    }    
-    
+      const errorMsg = `There is an error with this definition. Sorry for the inconvience.`
+      return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+    }
 
     //uEnd is used for an error message below
+    var uEnd
     if (i + 1 === 1) {
-      var uEnd = 'st' //u never know
+      uEnd = 'st' //u never know
     } else if (i + 1 === 2) {
-      var uEnd = 'nd'
+      uEnd = 'nd'
     } else if (i + 1 === 3) {
-      var uEnd = 'rd'
+      uEnd = 'rd'
     } else {
-      var uEnd = 'th'
+      uEnd = 'th'
     }
 
     //if user included a result number but there is no such result, show error. uEnd is used. otherwise put definition in uResult
     try {
       var uResult = list[i].definition
     } catch (err) {
-      const noResNumErrorMsg = {
-        "title": `Error`,
-        "description": `There is no ${i + 1}${uEnd} definition of *${args.join(' ').trimStart()}*.`,
-        "color": errorColor,
-        "footer": {
-          "icon_url": message.author.avatarURL(),
-          "text": `${message.author.tag}`,
-        },
-      };
-      return message.channel.send({ embed: noResNumErrorMsg });
+      const errorMsg = `There is no ${i + 1}${uEnd} definition of *${args.join(' ').trimStart()}*.`
+      return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
     }
 
     //check if example exists. rare case but it happens
     if (list[i].example !== "") {
       var uExample = list[i].example
     }
-    else { var uExample = "No example." } //so if there is no example, it shows this in the example field 
+    else { var uExample = "" }
 
     //put everything in variables
     var uTerm = list[i].word //the word as it is stored in urban dict.
@@ -124,137 +82,88 @@ module.exports = {
     var uDate = list[i].written_on.substring(0, 10) //the date, its very messy, so we only take a section of it and we change it below
     var uLikes = list[i].thumbs_up //the likes of the definition (left by other users on urban dict.)
     var uDislikes = list[i].thumbs_down //and the dislikes
+    uResult = uResult.replace(/[\[\]']+/g, '');
+    uExample = uExample.replace(/[\[\]']+/g, '');
 
     //the date variable is a mess, so we make it beautiful
+    var uMonth
     if (uDate.substring(5, 7) === '01') {
-      var uMonth = 'January'
+      uMonth = 'January'
     } else if (uDate.substring(5, 7) === '02') {
-      var uMonth = 'February'
+      uMonth = 'February'
     } else if (uDate.substring(5, 7) === '03') {
-      var uMonth = 'March'
+      uMonth = 'March'
     } else if (uDate.substring(5, 7) === '04') {
-      var uMonth = 'April'
+      uMonth = 'April'
     } else if (uDate.substring(5, 7) === '05') {
-      var uMonth = 'May'
+      uMonth = 'May'
     } else if (uDate.substring(5, 7) === '06') {
-      var uMonth = 'June'
+      uMonth = 'June'
     } else if (uDate.substring(5, 7) === '07') {
-      var uMonth = 'July'
+      uMonth = 'July'
     } else if (uDate.substring(5, 7) === '08') {
-      var uMonth = 'August'
+      uMonth = 'August'
     } else if (uDate.substring(5, 7) === '09') {
-      var uMonth = 'September'
+      uMonth = 'September'
     } else if (uDate.substring(5, 7) === '10') {
-      var uMonth = 'October'
+      uMonth = 'October'
     } else if (uDate.substring(5, 7) === '11') {
-      var uMonth = 'November'
+      uMonth = 'November'
     } else if (uDate.substring(5, 7) === '12') {
-      var uMonth = 'December'
+      uMonth = 'December'
     }
     var uFullDate = `${uMonth} ${uDate.substring(8, 10)}, ${uDate.substring(0, 4)}` //we put beautiful date in a var
 
-    //max chars in an embed field is 1024. cut every result that is above that so we can use the rest of it in another embed
-    //note: there's probably a much better way to do that. my code is shit. sorry.
-    if (uResult.length > 1020) {
-      var uResult1 = uResult.substring(0, 1020)
-      var uResult2 = uResult.substring(1020, uResult.length)
-    } else { var uResult1 = uResult }
+    var uResultArray = []
+    var uExampleArray = []
 
-    //same for the example
-    if (uExample.length > 1020) {
-      var uExample1 = uExample.substring(0, 1020)
-      var uExample2 = uExample.substring(1020, uExample.length)
-    } else { var uExample1 = uExample }
+    var y
 
-    //main embed
-    const embed = {
-      "title": uTerm,
-      "url": uUrl, //clicking the url goes to the definition in urban dict.
-      "color": tutuColor, //tutu purple
-      "footer": {
-        "icon_url": message.author.avatarURL(),
-        "text": `Requested by ${message.author.tag} 💜 | ${i + 1}/10`, //number of the result that is appearing out of 10 potential results
-      },
-      "fields": [
-        {
-          "name": "Definition",
-          "value": uResult1.replace(/[\[\]']+/g, '') //the replace is because some words and sentences have []. we remove those
-        },
-        {
-          "name": "Example",
-          "value": uExample1.replace(/[\[\]']+/g, '')
-        },
-        {
-          "name": "Info",
-          "value": `By ${uAuthor} on ${uFullDate}\n👍${uLikes} | 👎${uDislikes}`
-        },
-      ]
-    };
-    message.channel.send({ embed });
-
-    //if both result and example were big, we put the rest in this embed after we cut them above
-    //as i said above, this is a shit way to do that. hopefully i (or u) will manage to make a better way some day.
-    if (uResult.length > 1020 && uExample.length > 1020) {
-      const embed4 = {
-        "title": uTerm,
-        "url": uUrl,
-        "color": tutuColor,
-        "footer": {
-          "icon_url": message.author.avatarURL(),
-          "text": `Requested by ${message.author.tag} 💜 | ${i + 1}/10`,
-        },
-        "fields": [
-          {
-            "name": "Definition (part 2)",
-            "value": uResult2.replace(/[\[\]']+/g, '')
-          },
-          {
-            "name": "Example (part 2)",
-            "value": uExample2.replace(/[\[\]']+/g, '')
-          },
-        ]
-      };
-      message.channel.send({ embed: embed4 });
+    var uResLenght = uResult.length / 1020;
+    for (y = 0; y < uResLenght; y++) {
+      uResultArray[y] = uResult.slice(1020 * y, (1020 * y) + 1020);
     }
 
-    //if only result was too big
-    if (uResult.length > 1020) {
-      const embed2 = {
-        "title": uTerm,
-        "url": uUrl,
-        "color": tutuColor,
-        "footer": {
-          "icon_url": message.author.avatarURL(),
-          "text": `Requested by ${message.author.tag} 💜 | ${i + 1}/10`,
-        },
-        "fields": [
-          {
-            "name": "Definition (part 2)",
-            "value": `...${uResult2.replace(/[\[\]']+/g, '')}`
-          },
-        ]
-      };
-      message.channel.send({ embed: embed2 });
+    var uExLenght = uExample.length / 1020;
+    for (y = 0; y < uExLenght; y++) {
+      uExampleArray[y] = uExample.slice(1020 * y, (1020 * y) + 1020);
     }
 
-    //and if only example was too big
-    if (uExample.length > 1020) {
-      const embed3 = {
-        "title": uTerm,
-        "url": uUrl,
-        "color": tutuColor,
-        "footer": {
-          "icon_url": message.author.avatarURL(),
-          "text": `Requested by ${message.author.tag} 💜 | ${i + 1}/10`,
-        },
-        "fields": [
-          {
-            "name": "Example (part 2)",
-            "value": `...${uExample2.replace(/[\[\]']+/g, '')}`
-          },
-        ]
-      };
-      message.channel.send({ embed: embed3 });
+    var resultEmbed = new Discord.MessageEmbed()
+      .setColor(tutuColor)
+      .setTitle(uTerm)
+      .setURL(uUrl)
+      .setFooter(`Requested by ${message.author.tag} 💜 | ${i + 1}/10`, message.author.avatarURL())
+
+    y = 0
+    while (uResLenght > 0 || uExLenght > 0) {
+
+      if (y > 0) {
+        var uResTitle = `Definition (part ${y + 1})`
+        var uExTitle = `Example (part ${y + 1})`
+      } else {
+        var uResTitle = `Definition`
+        var uExTitle = `Example`
+      }
+
+      if (uResLenght > 0) {
+        resultEmbed.addField(uResTitle, uResultArray[y])
+        uResLenght = uResLenght - 1
+      }
+
+      if (uExLenght > 0) {
+        resultEmbed.addField(uExTitle, uExampleArray[y])
+        uExLenght = uExLenght - 1
+      }
+
+      if (y === 0) {
+        resultEmbed.addField('Info', `By ${uAuthor} on ${uFullDate}\n👍${uLikes} | 👎${uDislikes}`)
+      }
+
+      y++
+
+      message.channel.send(resultEmbed);
+      resultEmbed.fields = [];
     }
   },
 };
