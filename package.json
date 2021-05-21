@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "discord.js": "^12.5.1",
+    "discord.js-collector": "^1.8.9",
     "nekos.life": "^2.0.7",
     "random-reddit": "^1.2.3",
     "snoowrap": "^1.22.0"
