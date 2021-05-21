@@ -1,6 +1,7 @@
 const fs = require('fs');
 const Discord = require('discord.js');
 const { prefix, token, ownerId } = require('./config.json');
+require(`${require.main.path}/events/embeds.js`)();
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -27,20 +28,15 @@ for (const file of eventFiles) {
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.username}!`)
-    client.user.setActivity('you fail at life | ,help', { type: 'WATCHING' })
+    client.user.setActivity('for ,help', { type: 'WATCHING' })
     global.tutuColor = 8340223
     global.errorColor = 16724787
-    global.nsfwErrorMsg = {
-        "title": `Error`,
-        "description": `The NSFW commands are disabled for this server. Please contact <@${ownerId}> if you want them enabled.`,
-        "color": errorColor,
-    };
-    global.nsfwDisableID = [ //Add guild IDs to disable the bot for
+    global.nsfwDisableID = [ //Add guild IDs to disable the nsfw commands for
         '614631355694710795',
-        //'436952826380288010'
     ]
     global.bannedID = [ //Add user IDs to "ban" them from using the bot
-        '456431947183554560'
+        '456431947183554560',
+        '829636194342010891'
     ]
 });
 
@@ -58,91 +54,48 @@ client.on('message', message => {
 
     try {
         if (bannedID.includes(message.author.id)) {
-            const bannedErrorMsg = {
-                "title": `Error`,
-                "description": `You have been banned from using this bot.`,
-                "color": errorColor,
-                "footer": {
-                    "icon_url": message.author.avatarURL(),
-                    "text": `${message.author.tag}`,
-                },
-            };
-            return message.channel.send({ embed: bannedErrorMsg });
+            const errorMsg = `You have been banned from using this bot.`
+            return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
         }
 
         if (command.disabled) {
-            const disabledErrorMsg = {
-                "title": `Error`,
-                "description": `This command is disabled.`,
-                "color": errorColor,
-                "footer": {
-                    "icon_url": message.author.avatarURL(),
-                    "text": `${message.author.tag}`,
-                },
-            };
-            return message.channel.send({ embed: disabledErrorMsg });
+            const errorMsg = `This command is disabled.`
+            return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
         }
 
         if (command.guildOnly && message.channel.type === 'dm') {
-            const DMErrorMsg = {
-                "title": `Error`,
-                "description": `You can't use this command in DMs.`,
-                "color": errorColor,
-                "footer": {
-                    "icon_url": message.author.avatarURL(),
-                    "text": `${message.author.tag}`,
-                },
-            };
-            return message.channel.send({ embed: DMErrorMsg });
+            return errorGuildOnly(message, message.author.avatarURL(), message.author.tag)
         }
 
         if (command.nsfwDisable && nsfwDisableID.includes(message.guild.id)) {
-            return message.channel.send({ embed: nsfwErrorMsg })
+            const errorMsg = `The NSFW commands are disabled for this server. Please contact <@${ownerId}> if you want them enabled.`
+            return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
         }
 
         if (command.nsfwCommand && !message.channel.nsfw) {
-            const nsfwOnlyErrorMsg = {
-                "title": `Error`,
-                "description": `This command can only be used in NSFW channels.`,
-                "color": errorColor,
-                "footer": {
-                    "icon_url": message.author.avatarURL(),
-                    "text": `${message.author.tag}`,
-                },
-            };
-            return message.channel.send({ embed: nsfwOnlyErrorMsg });
+            const errorMsg = `This command can only be used in NSFW channels.`
+            return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
         }
 
         if (command.permissions) {
-            const authorPerms = message.channel.permissionsFor(message.author);
-            if (!authorPerms || !authorPerms.has(command.permissions)) {
-                const PermErrorMsg = {
-                    "title": `Error`,
-                    "description": `You do not have permission to use this command.`,
-                    "color": errorColor,
-                    "footer": {
-                        "icon_url": message.author.avatarURL(),
-                        "text": `${message.author.tag}`,
-                    },
-                };
-                return message.channel.send({ embed: PermErrorMsg });
+            if (message.channel.type === 'dm') {
+                return errorGuildOnly(message, message.author.avatarURL(), message.author.tag)
+            }
+            else {
+                const authorPerms = message.channel.permissionsFor(message.author);
+                if (!authorPerms || !authorPerms.has(command.permissions)) {
+                    const errorMsg = `You do not have permission to use this command.`
+                    return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+                }
             }
         }
 
-
         command.execute(message, args);
+
     } catch (error) {
         console.error(error);
-        const FatalErrorMsg = {
-            "title": `Error`,
-            "description": `An error occured trying to execute that command! Please contact <@${ownerId}>.`,
-            "color": errorColor,
-            "footer": {
-                "icon_url": message.author.avatarURL(),
-                "text": `${message.author.tag}`,
-            },
-        };
-        return message.channel.send({ embed: FatalErrorMsg });
+        const errorMsg = `An error occured trying to execute that command, please contact <@${ownerId}>.`
+        return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
     }
 
 });
