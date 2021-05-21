@@ -1,3 +1,5 @@
+const { ownerId } = require(`${require.main.path}/config.json`);
+
 module.exports = function () {
     this.errorEmbed = function (message, errorMsg, avatarURL, authorTag) {
         const embed = {
@@ -51,10 +53,10 @@ module.exports = function () {
         message.channel.send({ embed: embed })
     };
 
-    this.error503Reddit = function (message, avatarURL, authorTag) {
+    this.errorNsfwDisabled = function (message, avatarURL, authorTag) {
         const embed = {
-            "title": `Error 503`,
-            "description": `Reddit servers are unavailable right now, please try again.`,
+            "title": `Error`,
+            "description": `The NSFW commands are disabled for this server. Please contact <@${ownerId}> if you want them enabled.`,
             "color": errorColor,
             "footer": {
                 "icon_url": avatarURL,
