@@ -1,11 +1,11 @@
-const { serverLogId, serverLogIdDM } = require(`${require.main.path}/config.json`);
+const { serverLogId, serverLogIdDM, ownerId } = require(`${require.main.path}/config.json`);
 module.exports = {
 	name: 'message',
 	execute(message, client) {
 		let ignoreId = [ //user ids that the bot should ignore
-			'241929388403195914',
 			'705043523279388723',
-			'822554692578967602'
+			'822554692578967602',
+			ownerId
 		]
 		if (ignoreId.includes(message.author.id)) return;
 		
