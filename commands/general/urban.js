@@ -49,6 +49,19 @@ module.exports = {
       return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
     }
 
+    //sort by likes
+    function compare(a, b) {
+      if (a.thumbs_up > b.thumbs_up) {
+        return -1;
+      }
+      if (a.thumbs_up < b.thumbs_up) {
+        return 1;
+      }
+      return 0;
+    }
+
+    list.sort(compare);
+
     //uEnd is used for an error message below
     var uEnd
     if (i + 1 === 1) {
