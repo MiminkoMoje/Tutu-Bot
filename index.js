@@ -61,8 +61,7 @@ client.on('message', message => {
         }
 
         if (command.nsfwDisable && nsfwDisableGuildID.includes(message.guild.id)) {
-            const errorMsg = `The NSFW commands are disabled for this server. Please contact <@${ownerId}> if you want them enabled.`
-            return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+            return errorNsfwDisabled(message, message.author.avatarURL(), message.author.tag)
         }
 
         if (command.nsfwCommand && !message.channel.nsfw) {
