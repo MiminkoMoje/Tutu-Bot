@@ -146,7 +146,7 @@ module.exports = {
       .setColor(tutuColor)
       .setTitle(uTerm)
       .setURL(uUrl)
-      .setFooter(`Requested by ${message.author.tag} 💜 | ${i + 1}/10`, message.author.avatarURL())
+      .setFooter(`Requested by ${message.author.tag} 💜 | ${i + 1}/${list.length}`, message.author.avatarURL())
 
     y = 0
     while (uResLenght > 0 || uExLenght > 0) {
