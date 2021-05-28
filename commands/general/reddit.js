@@ -140,7 +140,7 @@ module.exports = {
                         if (i === rText.length - 1 && post.hide_score === false) {
                             rPost.addField('Score', `👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)`)
                         }
-                        message.channel.send(rPost)
+                        var botMessage = await message.channel.send(rPost)
                     }
                 }
                 if (hasUrl === true && hasTxt !== true) {
