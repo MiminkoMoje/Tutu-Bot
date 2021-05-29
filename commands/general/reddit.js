@@ -87,8 +87,12 @@ module.exports = {
         } catch (error) {
             if (error.statusCode === 503) {
                 return error503Reddit(message, message.author.avatarURL(), message.author.tag)
-            } else {
-                console.log(error)
+            }
+            else if (error.error.message) {
+                const errorMsg = `Error ${error.error.error}: ${error.error.message} (${error.error.reason})`
+                return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+            }
+            else {
                 return errorNoResults(message, message.author.avatarURL(), message.author.tag)
             }
         }
@@ -118,7 +122,7 @@ module.exports = {
                 if (post.url !== '' && hasImg === false) {
                     var hasUrl = true
                 }
-                
+
                 if (hasTxt === true) {
                     var rText = []
                     var size = subText.length / 2040;
@@ -167,7 +171,6 @@ module.exports = {
                 }
 
             } catch (error) {
-                console.log(error)
                 return errorNoResults(message, message.author.avatarURL(), message.author.tag)
             }
         }
