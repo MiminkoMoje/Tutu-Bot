@@ -13,7 +13,7 @@ Add the Tutu Bot to your Discord server by visiting my [Tutu Bot Website](https:
 
 If you want to see how useless this bot is by yourself, you can clone this repo:
 ```
-git clone https://github.com/MiminkoMoje/TutuBot.git
+git clone https://github.com/down-bad/TutuBot.git
 ```
 After cloning, run
 ```

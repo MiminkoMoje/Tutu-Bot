@@ -13,12 +13,12 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MiminkoMoje/Tutu-Bot.git"
+    "url": "git+https://github.com/down-bad/Tutu-Bot.git"
   },
   "author": "Vasilis#3698",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MiminkoMoje/Tutu-Bot/issues"
+    "url": "https://github.com/down-bad/Tutu-Bot/issues"
   },
-  "homepage": "https://github.com/MiminkoMoje/Tutu-Bot#readme"
+  "homepage": "https://github.com/down-bad/Tutu-Bot#readme"
 }
