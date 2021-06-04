@@ -2,16 +2,20 @@
 
 Poorly-coded bot intended to be used in my and my friends' servers.
 
-Urban Dictionary term look-up,  
-Memes from Reddit,  
-NSFW commands,  
-plus other goofy but also very useless commands.  
+- Epic Reddit command: show a random post from any subreddit of your choice, or show top posts of the day/week/month etc.  
+  - Or, use one of the many pre-defined Reddit commands for memes, NSFW content and more.  
+- Search for any term using the Urban Dictionary. That website has definitions for literally everything.  
+- (Coming soon) Search for more serious definitions using the Google Dictionary, including examples, synonyms and more.  
+- Or just use the useless commands that I made back when I was still watching JavaScript tutorials, such as ,coinflip and ,pp ;)
 
-Add the Tutu Bot to your Discord server by visiting my [Tutu Bot Website](https://imvasi.com/tutu). Keep in mind that the bot isn't always running. If you want to host the bot by yourself, make changes or contribute, read below.
+Add the Tutu Bot to your Discord server by visiting my [Tutu Bot Website](https://imvasi.com/tutu).  
+Keep in mind that the bot isn't always on. If you want to host the bot by yourself, make changes or contribute, read below.
 
 ## Installation
 
-If you want to see how useless this bot is by yourself, you can clone this repo:
+If you've decided to host the bot by youself, you'll need to follow these steps:  
+
+Firstly, clone the repo
 ```
 git clone https://github.com/down-bad/TutuBot.git
 ```
@@ -23,23 +27,22 @@ to install the required dependencies. Obviously, you need [node](https://nodejs.
 
 ## Set up
 
-Rename the `rename_me.json` file to `config.json`.  
-Now, open it and fill out the required information:  
-`token`: Your token  
-`ownerID`: Your user ID  
+- Rename the `rename_me.json` file to `config.json`.  
+- Now, open it and fill out the required information:  
+  - `token`: Your token  
+  - `ownerID`: Your Discord user ID  
 
-`redditCredentials`:  
-This bot uses Reddit for some commands and most of the NSFW ones. In order to set up Reddit for the bot:  
--Proceed to [Authorized applications](https://reddit.com/prefs/apps/)  
--Press the "Create an app" button  
--Enter your application's name, its description and about and redirect uris  
--Choose "script" in the list - that's important  
--Press the "Create app" button  
+  - `redditCredentials`: This bot uses Reddit for some commands and most of the NSFW ones. In order to set up Reddit for the bot:  
+    - Go to [Authorized applications](https://reddit.com/prefs/apps/)  
+    - Press "Create an app"  
+    - Enter an application name, a description and a redirect uri (if you're not sure about the redirect uri, just put `http://localhost:8080`)
+    - Choose "script" in the list - that's important  
+    - Press the "Create app" button  
 
-You will get the app's ID under the "personal use script" line and app's secret hash.  
+You will get the app's ID under the "personal use script" line and the secret hash.  
 So now, in `config.json`, you can fill the required Reddit information.  
 
-Run `index.js` to give life to the bot.  
+Run `index.js` to give life to the bot. (`node index.js`)  
 
 Note: the `coinflip` command uses custom emotes. You can find them in the `custom emotes` folder but you will have to se them up by yourself in `coinflip.js`.
 
