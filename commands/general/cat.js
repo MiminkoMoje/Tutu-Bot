@@ -8,17 +8,15 @@ module.exports = {
     async execute(message) {
         if (Math.floor(Math.random() * 2) === 0) {
             var {file} = await fetch('https://aws.random.cat/meow').then(response => response.json());
-            var i = 1
         } else {
            const meowUrl = await neko.sfw.meow();
            var file = meowUrl.url
-           var i = 2
         }
         const embed = {
             "color": tutuColor,
             "footer": {
                 "icon_url": message.author.avatarURL(),
-                "text": `Requested by ${message.author.tag} 💜 | meow ${i}`,
+                "text": `Requested by ${message.author.tag} 💜`,
             },
             "image": {
                 "url": file
