@@ -15,10 +15,7 @@ module.exports = {
                 .setFooter(`Requested by ${message.author.tag} 💜`, message.author.avatarURL())
                 .addFields(
                     { name: ',nsfw', value: `*r/porn, r/NSFW_GIF, r/nsfw_gifs, r/The_Best_NSFW_GIFS, r/nsfwhardcore, r/VerticalGifs, r/gifsgonewild*: General NSFW gifs and porn` },
-                    { name: ',nudes', value: `*r/Nude_Selfie*: Cute™ girls sharing (for some weird reason) their nudes online` },
-                    { name: ',realgirls', value: `*r/RealGirls*: Yes, they're real. (They're naked too)` },
-                    { name: ',legalteens', value: `*r/LegalTeens*: Just about 😳` },
-                    { name: ',collegesluts', value: `*r/collegesluts*: Women from college I guess? Naked women I mean.` },
+                    { name: ',nudes', value: `*r/Nude_Selfie, r/RealGirls, r/LegalTeens, r/collegesluts*: Cute™ girls sharing (for some weird reason) their nudes online` },
                     { name: ',lesbians', value: `*r/lesbians, r/Lesbian_gifs*: They do be kinda hot tho ngl` },
                     { name: ',rule34', value: `*r/rule34*: In case you're into... this` },
                     { name: ',hentai', value: `*r/hentai, r/HENTAI_GIF*` },

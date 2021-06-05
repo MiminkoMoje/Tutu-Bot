@@ -5,8 +5,8 @@ require('./nsfw-command.js')();
 
 module.exports = {
     name: 'nudes',
-    aliases: ['nude'],
-    description: 'Shows random post of r/Nude_Selfie.',
+    aliases: ['nude', 'realgirls', 'legalteens', 'collegesluts'],
+    description: 'Shows random post of r/Nude_Selfie, r/RealGirls, r/LegalTeens or r/collegesluts.',
     guildOnly: true,
     nsfwDisable: true,
     nsfwCommand: true,
@@ -17,20 +17,16 @@ module.exports = {
             app_id: redditCredentials.app_id,
             api_secret: redditCredentials.api_secret,
             logs: false
-          });
+        });
 
-        const post = await reddit.getImage('Nude_Selfie')
-        const embed = {
-            "title": rInfo.title,
-            "color": 8340223,
-            "footer": {
-                "icon_url": message.author.avatarURL(),
-                "text": `Requested by ${message.author.tag} 💜 | Tutu well! | by ${rInfo.author} in ${rInfo.subreddit}`,
-            },
-            "image": {
-                "url": post
-            },
-        };
-        message.channel.send({ embed });
+        var subreddits = [
+            'Nude_Selfie',
+            'RealGirls',
+            'LegalTeens',
+            'collegesluts'
+        ]
+
+        const post = await reddit.getImage(subreddits)
+        nsfwCommand(message, message.author.tag, post, rInfo.title, rInfo.author, rInfo.subreddit)
     },
 };
