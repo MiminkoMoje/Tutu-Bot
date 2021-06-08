@@ -29,7 +29,7 @@ for (const file of eventFiles) {
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.username}!`)
     client.user.setActivity('for ,help', { type: 'WATCHING' })
-    global.tutuColor = 8340223
+    global.tutuColor = 7799039
     global.errorColor = 16724787
 });
 
@@ -40,8 +40,8 @@ client.on('message', message => {
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
 
-    const command = client.commands.get(commandName)
-        || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+    const command = client.commands.get(commandName) ||
+        client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
     if (!command) return;
 
@@ -72,8 +72,7 @@ client.on('message', message => {
         if (command.permissions) {
             if (message.channel.type === 'dm') {
                 return errorGuildOnly(message, message.author.avatarURL(), message.author.tag)
-            }
-            else {
+            } else {
                 const authorPerms = message.channel.permissionsFor(message.author);
                 if (!authorPerms || !authorPerms.has(command.permissions)) {
                     const errorMsg = `You do not have permission to use this command.`
