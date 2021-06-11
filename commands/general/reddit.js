@@ -1,5 +1,6 @@
 const snoowrap = require('snoowrap');
 const Discord = require('discord.js');
+const { MessageButton } = require("discord-buttons")
 const { ReactionCollector } = require('discord.js-collector')
 const { redditCredentials } = require(`${require.main.path}/config.json`);
 require(`${require.main.path}/events/embeds.js`)();
@@ -7,7 +8,7 @@ module.exports = {
     name: 'reddit',
     aliases: ['sub', 'r', 'submission', 'subreddit'],
     description: 'Shows a random Reddit post from your selected subreddit.',
-    guildOnly: true,
+    //guildOnly: true,
     async execute(message, args) {
         const r = new snoowrap({
             userAgent: 'TutuBot',
@@ -16,6 +17,7 @@ module.exports = {
             username: redditCredentials.username,
             password: redditCredentials.password
         });
+        r.config({ warnings: true, maxRetryAttempts: 1 });
 
         function timeConverter(UNIX_timestamp) {
             var a = new Date(UNIX_timestamp * 1000);
@@ -79,26 +81,30 @@ module.exports = {
                     rListing = Listing
                     redditPost(post, args)
                 })
-            }
-            else {
+            } else {
                 post = await r.getRandomSubmission(args[0]);
                 redditPost(post, args)
             }
         } catch (error) {
             if (error.statusCode === 503) {
                 return error503Reddit(message, message.author.avatarURL(), message.author.tag)
-            }
-            else if (error.error.message) {
+            } else if (error.error.message) {
                 const errorMsg = `Error ${error.error.error}: ${error.error.message} (${error.error.reason})`
                 return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
-            }
-            else {
+            } else {
                 return errorNoResults(message, message.author.avatarURL(), message.author.tag)
             }
         }
 
+        //console.log(post)
+
         async function redditPost(post, args) {
             try {
+                if (post.removed_by_category === 'deleted') {
+                    const errorMsg = `[This](${post.url}) post has been deleted.`
+                    return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+                }
+
                 if (post.over_18 === true && !message.channel.nsfw) {
                     const rNsfw = {
                         "title": `Error`,
@@ -110,17 +116,24 @@ module.exports = {
                         },
                     };
                     botMessage = await message.channel.send({ embed: rNsfw });
-                    if (args[1] === 'top') { return redditSw(botMessage, rListing, args) }
-                    else return;
+                    if (args[1] === 'top') { return redditSw(botMessage, rListing, args) } else return;
                 }
-                let _a;
-                const hasImg = /(jpe?g|png|gif)/.test((_a = post === null || post === void 0 ? void 0 : post) === null || _a === void 0 ? void 0 : _a.url);
+
                 if (post.selftext !== '') {
                     var hasTxt = true
                     var subText = post.selftext
                 }
-                if (post.url !== '' && hasImg === false) {
+                if (post.url !== '') {
                     var hasUrl = true
+                }
+
+                if (post.is_gallery === true) {
+                    var validPosts = Object.values(post.media_metadata).filter((image) => image.status === 'valid');
+                    var galleryIds = []
+                    for (x = 0; x < validPosts.length; x++) {
+                        galleryIds[x] = `https://i.redd.it/${validPosts[x].id}.${validPosts[x].m.split('/').pop()}`
+                    }
+
                 }
 
                 if (hasTxt === true) {
@@ -152,18 +165,24 @@ module.exports = {
                     if (post.hide_score === false) {
                         rMessage = rMessage.concat(`👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)\n`)
                     }
-                    rMessage = rMessage.concat(`\n**${post.title}**\n${post.url}\nRequested by ${message.author.tag} 💜 | [${post.id}]`)
-                    var botMessage = await message.channel.send(rMessage)
-                }
+                    rMessage = rMessage.concat(`\n**${post.title}**\n`)
 
-                if (hasImg === true) {
-                    const image = post.url.replace('gifv', 'gif');
-                    rMessage = `${post.subreddit_name_prefixed} • by u/${post.author.name} • ${timeConverter(post.created)}\n`
-                    if (post.hide_score === false) {
-                        rMessage = rMessage.concat(`👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)\n`)
+                    if (post.is_gallery === true) {
+                        for (x = 0; x < galleryIds.length; x++) {
+                            rMessage = rMessage.concat(`${galleryIds[x]}\n`)
+                        }
+                    } else {
+                        rMessage = rMessage.concat(`${post.url}\n`)
                     }
-                    rMessage = rMessage.concat(`\n**${post.title}**\n${image}\nRequested by ${message.author.tag} 💜 | [${post.id}]`)
-                    var botMessage = await message.channel.send(rMessage)
+                    rMessage = rMessage.concat(`Requested by ${message.author.tag} 💜 | [${post.id}]`)
+                    
+                    let rButton = new MessageButton()
+                        .setLabel("Open on Reddit")
+                        .setStyle("url")
+                        .setEmoji("🟠")
+                        .setURL(`https://reddit.com${post.permalink}`)
+
+                    var botMessage = await message.channel.send(rMessage, { buttons: [rButton] });
                 }
 
                 if (args[1] == 'top') {
@@ -171,9 +190,9 @@ module.exports = {
                 }
 
             } catch (error) {
+                console.log(error)
                 return errorNoResults(message, message.author.avatarURL(), message.author.tag)
             }
         }
     },
 };
-
