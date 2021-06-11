@@ -6,7 +6,7 @@ require(`${require.main.path}/events/embeds.js`)();
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const commandFolders = fs.readdirSync('./commands');
-
+require('discord-buttons')(client);
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 
 for (const folder of commandFolders) {
