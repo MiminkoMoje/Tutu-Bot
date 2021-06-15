@@ -17,7 +17,7 @@ module.exports = {
             username: redditCredentials.username,
             password: redditCredentials.password
         });
-        r.config({ warnings: true, maxRetryAttempts: 1 });
+        r.config({ warnings: false, maxRetryAttempts: 1 });
 
         function timeConverter(UNIX_timestamp) {
             var a = new Date(UNIX_timestamp * 1000);
@@ -190,7 +190,7 @@ module.exports = {
                 }
 
             } catch (error) {
-                console.log(error)
+                //console.log(error)
                 return errorNoResults(message, message.author.avatarURL(), message.author.tag)
             }
         }
