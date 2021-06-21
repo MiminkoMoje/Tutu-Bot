@@ -8,7 +8,7 @@ Poorly-coded bot intended to be used in my and my friends' servers.
 - (Coming soon) Search for more serious definitions using the Google Dictionary, including examples, synonyms and more.
 - Or just use the useless commands that I made back when I was still watching JavaScript tutorials, such as ,coinflip and ,pp ;)
 
-See the full command list [here](https://imvasi.com/tutu#commands).
+See the full command list [here](https://imvasi.com/#commands).
 
 Add the Tutu Bot to your Discord server by visiting my [Tutu Bot Website](https://imvasi.com/tutu).  
 Keep in mind that the bot isn't always on. If you want to host the bot by yourself, make changes or contribute, read below.
