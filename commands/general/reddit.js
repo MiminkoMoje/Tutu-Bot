@@ -25,10 +25,10 @@ module.exports = {
             var year = a.getFullYear();
             var month = months[a.getMonth()];
             var date = a.getDate();
-            //var hour = a.getHours();
-            //var min = a.getMinutes();
+            var hour = a.getHours();
+            var min = a.getMinutes();
             //var sec = a.getSeconds();
-            var time = `${month} ${date}, ${year}`
+            var time = `${month} ${date}, ${year} ${hour}:${min}`
             return time;
         }
 
@@ -161,7 +161,7 @@ module.exports = {
                     }
                 }
                 if (hasUrl === true && hasTxt !== true) {
-                    rMessage = `${post.subreddit_name_prefixed} • by u/${post.author.name} • ${timeConverter(post.created)}\n`
+                    rMessage = `${post.subreddit_name_prefixed} • by u/${post.author.name} • ${timeConverter(post.created_utc)}\n`
                     if (post.hide_score === false) {
                         rMessage = rMessage.concat(`👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)\n`)
                     }
