@@ -108,7 +108,7 @@ module.exports = {
                 if (post.over_18 === true && !message.channel.nsfw) {
                     const rNsfw = {
                         "title": `Error`,
-                        "description": `[This](${post.url}) is a NSFW post, please use a NSFW channel.`,
+                        "description": `[This](https://reddit.com${post.permalink}) is a NSFW post, please use a NSFW channel.`,
                         "color": errorColor,
                         "footer": {
                             "icon_url": message.author.avatarURL(),
