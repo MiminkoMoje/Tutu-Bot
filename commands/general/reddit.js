@@ -62,7 +62,7 @@ module.exports = {
         }
 
         if (!args[0]) {
-            const errorMsg = `Please supply a subreddit.`
+            const errorMsg = `Please provide a subreddit.`
             return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
         }
 
