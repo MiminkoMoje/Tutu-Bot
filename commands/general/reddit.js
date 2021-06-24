@@ -179,8 +179,10 @@ module.exports = {
                         for (x = 0; x < galleryIds.length; x++) {
                             rMessage = rMessage.concat(`${galleryIds[x]}\n`)
                         }
-                    } else {
+                    } else if (!post.url.includes(post.id)) {
                         rMessage = rMessage.concat(`${post.url}\n`)
+                    } else {
+                        rMessage = rMessage.concat(`\n`)
                     }
                     rMessage = rMessage.concat(`Requested by ${message.author.tag} 💜 | [${post.id}]`)
                     
