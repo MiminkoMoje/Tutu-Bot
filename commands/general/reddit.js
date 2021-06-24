@@ -112,7 +112,7 @@ module.exports = {
                         "color": errorColor,
                         "footer": {
                             "icon_url": message.author.avatarURL(),
-                            "text": `${message.author.tag} | [${post.name}]`,
+                            "text": `${message.author.tag} | [${post.id}]`,
                         },
                     };
                     botMessage = await message.channel.send({ embed: rNsfw });
