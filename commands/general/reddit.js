@@ -27,6 +27,7 @@ module.exports = {
             var date = a.getDate();
             var hour = a.getHours();
             var min = a.getMinutes();
+            min = ('0' + min).slice(-2)
             //var sec = a.getSeconds();
             var time = `${month} ${date}, ${year} ${hour}:${min}`
             return time;
