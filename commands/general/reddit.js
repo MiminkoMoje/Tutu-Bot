@@ -160,8 +160,16 @@ module.exports = {
                         var botMessage = await message.channel.send(rPost)
                     }
                 }
+                
                 if (hasUrl === true && hasTxt !== true) {
-                    rMessage = `${post.subreddit_name_prefixed} • by u/${post.author.name} • ${timeConverter(post.created_utc)}\n`
+                    rMessage = `${post.subreddit_name_prefixed} •`
+
+                    if (post.crosspost_parent_list) {
+                        rMessage = rMessage.concat(` 🔀 Crossposted`)
+                    }
+
+                    rMessage = rMessage.concat(` by u/${post.author.name} • ${timeConverter(post.created_utc)}\n`)
+
                     if (post.hide_score === false) {
                         rMessage = rMessage.concat(`👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)\n`)
                     }
