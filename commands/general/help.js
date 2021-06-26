@@ -38,7 +38,7 @@ module.exports = {
             var helpEmbed = new Discord.MessageEmbed()
                 .setColor(tutuColor)
                 .setTitle(`Commands`)
-                .setDescription(`These are the available commands for now, new ones getting added frequently. [Press here](https://imvasi.com/tutu#commands) to see a more detailed command list.`)
+                .setDescription(`These are the available commands for now, new ones getting added frequently. [Press here](https://imvasi.com/#commands) to see a more detailed command list.`)
                 .setFooter(`Requested by ${message.author.tag} 💜`, message.author.avatarURL())
                 .addFields(
                     { name: ',help', value: 'This command eliminates racism and brings you good luck for 8.2 years' },
