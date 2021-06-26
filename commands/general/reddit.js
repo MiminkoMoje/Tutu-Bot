@@ -33,7 +33,7 @@ module.exports = {
             return time;
         }
 
-        function redditSw(botMessage, Listing, args) {
+        function redditSw(botMessage, Listing, args, rType) {
             ReactionCollector.question({
                 botMessage,
                 user: message.author,
@@ -53,7 +53,7 @@ module.exports = {
                         }
                         post = Listing[0]
                         rListing = Listing
-                        redditPost(post, args)
+                        redditPost(post, args, rType)
                     }),
                 },
                 collectorOptions: {
@@ -62,17 +62,36 @@ module.exports = {
             });
         }
 
+        function randomPostReaction(botMessage, args) {
+            ReactionCollector.question({
+                botMessage,
+                user: message.author,
+                reactions: {
+                    '🔄': async () => await getPost(args),
+                },
+                collectorOptions: {
+                    time: 3000000
+                }
+            });
+        }
+
+        getPost(args);
+
+        async function getPost(args) {
+
         if (!args[0]) {
             const errorMsg = `Please provide a subreddit.`
             return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
         }
 
         var post;
+            var rType;
 
         try {
             if (args[1] === 'id' || args[1] === 'i') {
                 post = await r.getSubmission(args[0]).fetch();
-                redditPost(post, args)
+                    rType = 'id'
+                    redditPost(post, args, rType)
             } else if (args[1] === 'top') {
                 if (args[2] !== 'hour' && args[2] !== 'day' && args[2] !== 'week' && args[2] !== 'month' && args[2] !== 'year' && args[2] !== 'all') {
                     args[2] = 'day'
@@ -80,12 +99,15 @@ module.exports = {
                 await r.getTop(args[0], { time: args[2], limit: 1 }).then(async Listing => {
                     post = Listing[0]
                     rListing = Listing
-                    redditPost(post, args)
+                        rType = 'top'
+                        redditPost(post, args, rType)
                 })
             } else {
                 post = await r.getRandomSubmission(args[0]);
-                redditPost(post, args)
+                    rType = 'random'
+                    redditPost(post, args, rType)
             }
+                //console.log(post)
         } catch (error) {
             if (error.statusCode === 503) {
                 return error503Reddit(message, message.author.avatarURL(), message.author.tag)
@@ -96,10 +118,9 @@ module.exports = {
                 return errorNoResults(message, message.author.avatarURL(), message.author.tag)
             }
         }
+        }
 
-        //console.log(post)
-
-        async function redditPost(post, args) {
+        async function redditPost(post, args, rType) {
             try {
                 if (post.removed_by_category === 'deleted') {
                     const errorMsg = `[This](${post.url}) post has been deleted.`
@@ -116,14 +137,28 @@ module.exports = {
                             "text": `${message.author.tag} | [${post.id}]`,
                         },
                     };
+
                     botMessage = await message.channel.send({ embed: rNsfw });
-                    if (args[1] === 'top') { return redditSw(botMessage, rListing, args) } else return;
+
+                    if (rType === 'top') {
+                        return redditSw(botMessage, rListing, args)
+                    } else if (rType === 'random') {
+                        return randomPostReaction(botMessage, args)
+                    } else return;
                 }
 
-                if (post.selftext !== '') {
+                if (post.selftext !== '' || post.crosspost_parent_list) {
+                    if (post.crosspost_parent_list) {
+                        if (post.crosspost_parent_list[0].selftext !== '') {
+                            var subText = post.crosspost_parent_list[0].selftext
                     var hasTxt = true
+                        }
+                    } else {
                     var subText = post.selftext
+                        var hasTxt = true
                 }
+                }
+
                 if (post.url !== '') {
                     var hasUrl = true
                 }
@@ -134,7 +169,6 @@ module.exports = {
                     for (x = 0; x < validPosts.length; x++) {
                         galleryIds[x] = `https://i.redd.it/${validPosts[x].id}.${validPosts[x].m.split('/').pop()}`
                     }
-
                 }
 
                 if (hasTxt === true) {
@@ -150,15 +184,28 @@ module.exports = {
                         var rPost = new Discord.MessageEmbed()
                             .setColor(tutuColor)
                             .setTitle(post.title)
-                            .setURL(post.url)
+                            .setURL(`https://www.reddit.com${post.permalink}`)
                             .setFooter(`Requested by ${message.author.tag} 💜 | [${post.id}]`, message.author.avatarURL())
-                            .setAuthor(`${post.subreddit_name_prefixed} • by u/${post.author.name} • ${timeConverter(post.created)}`, subIcon)
                             .setDescription(rText[i])
+
+                        rAuthor = `${post.subreddit_name_prefixed} •`
+
+                        if (post.crosspost_parent_list) {
+                            rAuthor = rAuthor.concat(` 🔀 Crossposted`)
+                        }
+
+                        rAuthor = rAuthor.concat(` by u/${post.author.name} • ${timeConverter(post.created_utc)}`)
+
+                        rPost.setAuthor(rAuthor, subIcon)
 
                         if (i === rText.length - 1 && post.hide_score === false) {
                             rPost.addField('Score', `👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)`)
                         }
                         var botMessage = await message.channel.send(rPost)
+                    }
+
+                    if (rType === 'random') {
+                        randomPostReaction(botMessage, args);
                     }
                 }
                 
@@ -194,10 +241,14 @@ module.exports = {
                         .setURL(`https://reddit.com${post.permalink}`)
 
                     var botMessage = await message.channel.send(rMessage, { buttons: [rButton] });
+
+                    if (rType === 'random') {
+                        randomPostReaction(botMessage, args);
+                    }
                 }
 
-                if (args[1] == 'top') {
-                    redditSw(botMessage, rListing, args)
+                if (rType == 'top') {
+                    redditSw(botMessage, rListing, args, rType)
                 }
 
             } catch (error) {
