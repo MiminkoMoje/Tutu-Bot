@@ -11,7 +11,9 @@ Poorly-coded bot intended to be used in my and my friends' servers.
 See the full command list [here](https://imvasi.com/#commands).
 
 Add the Tutu Bot to your Discord server by visiting my [Tutu Bot Website](https://imvasi.com/tutu).  
-Keep in mind that the bot isn't always on. If you want to host the bot by yourself, make changes or contribute, read below.
+The bot is now running 24/7!  
+
+If you want to host the bot by yourself, make changes or contribute, read below.
 
 ## Installation
 
