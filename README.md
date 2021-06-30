@@ -2,7 +2,7 @@
 
 # Tutu Bot
 
-A powerful Reddit-based Discord bot:
+A powerful Reddit-focused Discord bot:
 
 - Get random posts from any subreddit
 - Get the top posts of the hour/day/week/month/year/overall
