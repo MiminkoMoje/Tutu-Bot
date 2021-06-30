@@ -4,19 +4,19 @@
 
 A powerful Reddit-based Discord bot:
 
-- Get random posts from any subreddit
-- Get the top posts of the hour/day/week/month/year/overall
-- Get any posts by their ID  
+    - Get random posts from any subreddit
+    - Get the top posts of the hour/day/week/month/year/overall
+    - Get any posts by their ID  
 
-- Uses reactions and buttons for fast and easy browsing
-- Pre-defined commands for specific subreddits for a more user-friendly use, such as commands for memes, NSFW content and more
-- NSFW protection, NSFW posts can only be shown in NSFW channels  
+    - Uses reactions and buttons for fast and easy browsing
+    - Pre-defined commands for specific subreddits for a more user-friendly use, such as commands for memes, NSFW content and more
+    - NSFW protection, NSFW posts can only be shown in NSFW channels  
 
 Browse Reddit right from your Discord server.
 
 ### Ubran Dictionary
-- Quickly get any definition from [Urban Dictionary](https://www.urbandictionary.com/)
-- Includes examples, likes and dislikes, date, and author
+    - Quickly get any definition from [Urban Dictionary](https://www.urbandictionary.com/)
+    - Includes examples, likes and dislikes, date, and author
 
 #### See all the available commands [here](https://imvasi.com/#commands)
 
@@ -42,17 +42,17 @@ to install the required dependencies. Obviously, you need [node](https://nodejs.
 
 ## Set up
 
-- Rename the `rename_me.json` file to `config.json`.
-- Now, open it and fill out the required information:
-  - `token`: Your token
-  - `ownerID`: Your Discord user ID
+    - Rename the `rename_me.json` file to `config.json`.
+    - Now, open it and fill out the required information:
+      - `token`: Your token
+      - `ownerID`: Your Discord user ID
 
-  - `redditCredentials`: This bot uses Reddit for some commands and most of the NSFW ones. In order to set up Reddit for the bot:
-    - Go to [Authorized applications](https://reddit.com/prefs/apps/)
-    - Press "Create an app"
-    - Enter an application name, a description and a redirect uri (if you're not sure about the redirect uri, just put `http://localhost:8080`)
-    - Choose "script" in the list - that's important
-    - Press the "Create app" button
+      - `redditCredentials`: This bot uses Reddit for some commands and most of the NSFW ones. In order to set up Reddit for the bot:
+        - Go to [Authorized applications](https://reddit.com/prefs/apps/)
+        - Press "Create an app"
+        - Enter an application name, a description and a redirect uri (if you're not sure about the redirect uri, just put `http://localhost:8080`)
+        - Choose "script" in the list - that's important
+        - Press the "Create app" button
 
 You will get the app's ID under the "personal use script" line and the secret hash.  
 So now, in `config.json`, you can fill the required Reddit information.  
