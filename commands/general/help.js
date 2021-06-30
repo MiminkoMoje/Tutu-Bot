@@ -43,11 +43,10 @@ module.exports = {
                 .addFields(
                     { name: ',help', value: 'This command eliminates racism and brings you good luck for 8.2 years' },
                     { name: ',reddit [subreddit]', value: 'Shows a random submission from a subreddit' },
+                    { name: ',reddit [subreddit] top (hour/day/week/month/year/all)', value: 'Shows the top posts of a subreddit' },
                     { name: ',urban [term]', value: 'Shows the definition of any term using Urban Dictionary 😳' },
                     { name: ',dankmemes', value: 'Shows a random meme from *r/dankmemes*' },
                     { name: ',cat', value: 'Shows a random picture of a meow 🥺' },
-                    { name: ',coinflip', value: 'Flips a coin using a very sophisticated technology by NASA called RNG' },
-                    { name: ',pp', value: `Once and for all exposes yours and your friends' penis size` },
                 )
             if (message.channel.type !== 'dm') {
                 if (nsfwDisableGuildID.includes(message.guild.id) === false) {
