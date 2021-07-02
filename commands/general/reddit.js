@@ -173,11 +173,11 @@ module.exports = {
 
                 if (hasTxt === true) {
                     var rText = []
-                    var size = subText.length / 2040;
+                    var size = subText.length / 4096;
                     const subIcon = await r.getSubreddit(post.subreddit.display_name).community_icon
 
                     for (let i = 0; i < size; i++) {
-                        rText[i] = subText.slice(2040 * i, (2040 * i) + 2040)
+                        rText[i] = subText.slice(4096 * i, (4096 * i) + 4096)
                     }
 
                     for (let i = 0; i < rText.length; i++) {
