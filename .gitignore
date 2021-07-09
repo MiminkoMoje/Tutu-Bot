@@ -10,10 +10,7 @@ config.json
 *.code-workspace
 
 #ignore all modules except random-reddit
-!node_modules/
-
-node_modules/*
-!node_modules/random-reddit/
+node_modules/
 
 # Runtime data
 pids
@@ -86,3 +83,4 @@ typings/
 
 #Used for personal purposes
 events/message.js
+commands/vasilis/
