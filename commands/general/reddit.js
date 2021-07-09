@@ -4,12 +4,10 @@ const { MessageButton } = require("discord-buttons")
 const { ReactionCollector } = require('discord.js-collector')
 const { redditCredentials } = require(`${require.main.path}/config.json`);
 require(`${require.main.path}/events/embeds.js`)();
-module.exports = {
-    name: 'reddit',
-    aliases: ['sub', 'r', 'submission', 'subreddit'],
-    description: 'Shows a random Reddit post from your selected subreddit.',
-    //guildOnly: true,
-    async execute(message, args) {
+require(`${require.main.path}/commands/vasilis/reddit-log.js`)();
+
+//connect with account
+module.exports = function () {
         const r = new snoowrap({
             userAgent: 'TutuBot',
             clientId: redditCredentials.app_id,
@@ -17,8 +15,9 @@ module.exports = {
             username: redditCredentials.username,
             password: redditCredentials.password
         });
-        r.config({ warnings: false, maxRetryAttempts: 1 });
+    r.config({ warnings: false, maxRetryAttempts: 2 });
 
+    //format unix timestamp
         function timeConverter(UNIX_timestamp) {
             var a = new Date(UNIX_timestamp * 1000);
             var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -33,94 +32,8 @@ module.exports = {
             return time;
         }
 
-        function redditSw(botMessage, Listing, args, rType) {
-            ReactionCollector.question({
-                botMessage,
-                user: message.author,
-                reactions: {
-                    '⏩': async () => await Listing.fetchMore({ amount: 1, skipReplies: true, append: false }).then(async Listing => {
-                        if (Listing.isFinished === true) {
-                            const rFinished = {
-                                "title": `That's all for now!`,
-                                "description": `You saw all the available posts for this subreddit.`,
-                                "color": tutuColor,
-                                "footer": {
-                                    "icon_url": message.author.avatarURL(),
-                                    "text": `${message.author.tag}`,
-                                },
-                            };
-                            return message.channel.send({ embed: rFinished });
-                        }
-                        post = Listing[0]
-                        rListing = Listing
-                        redditPost(post, args, rType)
-                    }),
-                },
-                collectorOptions: {
-                    time: 3000000
-                }
-            });
-        }
-
-        function randomPostReaction(botMessage, args) {
-            ReactionCollector.question({
-                botMessage,
-                user: message.author,
-                reactions: {
-                    '🔄': async () => await getPost(args),
-                },
-                collectorOptions: {
-                    time: 3000000
-                }
-            });
-        }
-
-        getPost(args);
-
-        async function getPost(args) {
-
-        if (!args[0]) {
-            const errorMsg = `Please provide a subreddit.`
-            return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
-        }
-
-        var post;
-            var rType;
-
-        try {
-            if (args[1] === 'id' || args[1] === 'i') {
-                post = await r.getSubmission(args[0]).fetch();
-                    rType = 'id'
-                    redditPost(post, args, rType)
-            } else if (args[1] === 'top') {
-                if (args[2] !== 'hour' && args[2] !== 'day' && args[2] !== 'week' && args[2] !== 'month' && args[2] !== 'year' && args[2] !== 'all') {
-                    args[2] = 'day'
-                }
-                await r.getTop(args[0], { time: args[2], limit: 1 }).then(async Listing => {
-                    post = Listing[0]
-                    rListing = Listing
-                        rType = 'top'
-                        redditPost(post, args, rType)
-                })
-            } else {
-                post = await r.getRandomSubmission(args[0]);
-                    rType = 'random'
-                    redditPost(post, args, rType)
-            }
-                //console.log(post)
-        } catch (error) {
-            if (error.statusCode === 503) {
-                return error503Reddit(message, message.author.avatarURL(), message.author.tag)
-            } else if (error.error.message) {
-                const errorMsg = `Error ${error.error.error}: ${error.error.message} (${error.error.reason})`
-                return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
-            } else {
-                return errorNoResults(message, message.author.avatarURL(), message.author.tag)
-            }
-        }
-        }
-
-        async function redditPost(post, args, rType) {
+    //format and send post
+    async function redditPost(post, args, rType, message, subreddit, subreddits) {
             try {
                 if (post.removed_by_category === 'deleted') {
                     const errorMsg = `[This](${post.url}) post has been deleted.`
@@ -141,9 +54,9 @@ module.exports = {
                     botMessage = await message.channel.send({ embed: rNsfw });
 
                     if (rType === 'top') {
-                        return redditSw(botMessage, rListing, args)
-                    } else if (rType === 'random') {
-                        return randomPostReaction(botMessage, args)
+                    return redditTop(botMessage, rListing, args, rType, message, subreddit)
+                } else if (rType.includes('random')) {
+                    return randomPostReaction(botMessage, args, message, subreddit, rType, subreddits)
                     } else return;
                 }
 
@@ -172,6 +85,9 @@ module.exports = {
                 }
 
                 if (hasTxt === true) {
+                if (rType === 'random-predefined-image') {
+                    return redditGetPost(args, message, subreddit, rType)
+                }
                     var rText = []
                     var size = subText.length / 4096;
                     const subIcon = await r.getSubreddit(post.subreddit.display_name).community_icon
@@ -204,13 +120,16 @@ module.exports = {
                         var botMessage = await message.channel.send(rPost)
                     }
 
-                    if (rType === 'random') {
-                        randomPostReaction(botMessage, args);
+                if (rType.includes('random')) {
+                    randomPostReaction(botMessage, args, message, subreddit, rType, subreddits);
                     }
                 }
                 
                 if (hasUrl === true && hasTxt !== true) {
-                    rMessage = `${post.subreddit_name_prefixed} •`
+                rMessage = `${post.subreddit_name_prefixed}`
+                if (!rType.includes('random-predefined')) {
+
+                    rMessage = rMessage.concat(` •`)
 
                     if (post.crosspost_parent_list) {
                         rMessage = rMessage.concat(` 🔀 Crossposted`)
@@ -221,6 +140,7 @@ module.exports = {
                     if (post.hide_score === false) {
                         rMessage = rMessage.concat(`👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)\n`)
                     }
+                }
                     rMessage = rMessage.concat(`\n**${post.title}**\n`)
 
                     if (post.is_gallery === true) {
@@ -230,6 +150,9 @@ module.exports = {
                     } else if (!post.url.includes(post.id)) {
                         rMessage = rMessage.concat(`${post.url}\n`)
                     } else {
+                    if (rType === 'random-predefined-image') {
+                        return redditGetPost(args, message, subreddit, rType)
+                    }
                         rMessage = rMessage.concat(`\n`)
                     }
                     rMessage = rMessage.concat(`Requested by ${message.author.tag} 💜 | [${post.id}]`)
@@ -242,13 +165,13 @@ module.exports = {
 
                     var botMessage = await message.channel.send(rMessage, { buttons: [rButton] });
 
-                    if (rType === 'random') {
-                        randomPostReaction(botMessage, args);
+                if (rType.includes('random')) {
+                    randomPostReaction(botMessage, args, message, subreddit, rType, subreddits);
                     }
                 }
 
                 if (rType == 'top') {
-                    redditSw(botMessage, rListing, args, rType)
+                redditTop(botMessage, rListing, args, rType, message, subreddit)
                 }
 
             } catch (error) {
@@ -256,5 +179,106 @@ module.exports = {
                 return errorNoResults(message, message.author.avatarURL(), message.author.tag)
             }
         }
+
+    //get top posts
+    function redditTop(botMessage, Listing, args, rType, message, subreddit) {
+        ReactionCollector.question({
+            botMessage,
+            user: message.author,
+            reactions: {
+                '⏩': async () => await Listing.fetchMore({ amount: 1, skipReplies: true, append: false }).then(async Listing => {
+                    if (Listing.isFinished === true) {
+                        const rFinished = {
+                            "title": `That's all for now!`,
+                            "description": `You saw all the available posts for this subreddit.`,
+                            "color": tutuColor,
+                            "footer": {
+                                "icon_url": message.author.avatarURL(),
+                                "text": `${message.author.tag}`,
     },
 };
+                        return message.channel.send({ embed: rFinished });
+                    }
+                    post = Listing[0]
+                    rListing = Listing
+                    redditPost(post, args, rType, message, subreddit)
+                }),
+            },
+            collectorOptions: {
+                time: 6000000
+            }
+        });
+    }
+
+    //react to random posts
+    function randomPostReaction(botMessage, args, message, subreddit, rType, subreddits) {
+        ReactionCollector.question({
+            botMessage,
+            user: message.author,
+            reactions: {
+                '🔄': async () => await redditGetPost(args, message, subreddit, rType, subreddits),
+            },
+            collectorOptions: {
+                time: 6000000
+            }
+        });
+    }
+
+    //get reddit post
+    this.redditGetPost = async function (args, message, subreddit, rType, subreddits) {
+        if (!subreddit) {
+            const errorMsg = `Please provide a subreddit.`
+            return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+        }
+
+        var post;
+        //console.log(subreddit)
+        try {
+            if (!subreddits) {
+                var subreddits = subreddit
+            }
+
+            if (Array.isArray(subreddits)) {
+                const subNum = Math.floor(Math.random() * subreddits.length);
+                subreddit = subreddits[subNum]
+            }
+
+            if (rType.includes('random-predefined')) {
+                post = await r.getRandomSubmission(subreddit);
+                redditPost(post, args, rType, message, subreddit, subreddits)
+            }
+
+            else if (args[1] === 'id' || args[1] === 'i') {
+                post = await r.getSubmission(subreddit).fetch();
+                rType = 'id'
+                redditPost(post, args, rType, message, subreddit)
+            } else if (args[1] === 'top') {
+                if (args[2] !== 'hour' && args[2] !== 'day' && args[2] !== 'week' && args[2] !== 'month' && args[2] !== 'year' && args[2] !== 'all') {
+                    args[2] = 'day'
+                }
+                await r.getTop(args[0], { time: args[2], limit: 1 }).then(async Listing => {
+                    post = Listing[0]
+                    rListing = Listing
+                    rType = 'top'
+                    redditPost(post, args, rType, message, subreddit)
+                })
+            } else {
+                post = await r.getRandomSubmission(subreddit);
+                rType = 'random'
+                redditPost(post, args, rType, message, subreddit)
+            }
+            //console.log(post)
+        } catch (error) {
+            //console.log(error)
+            if (error.statusCode === 503) {
+                return error503Reddit(message, message.author.avatarURL(), message.author.tag)
+            } else if (error.error.message) {
+                const errorMsg = `Error ${error.error.error}: ${error.error.message} (${error.error.reason})`
+                return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+            }
+            else {
+                return errorNoResults(message, message.author.avatarURL(), message.author.tag)
+            }
+        }
+    }
+}
