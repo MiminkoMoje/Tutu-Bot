@@ -81,7 +81,7 @@ client.on('message', message => {
             }
         }
 
-        command.execute(message, args);
+        command.execute(message, args, client);
 
     } catch (error) {
         console.error(error);
