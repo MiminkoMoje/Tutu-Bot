@@ -9,7 +9,7 @@ module.exports = {
     const subreddit = [
       'nsfwhardcore',
       'nsfw',
-      'NSFW_GIF',
+      //'NSFW_GIF',
       'The_Best_NSFW_GIFS',
       'nsfw_gifs',
       'VerticalGifs',
