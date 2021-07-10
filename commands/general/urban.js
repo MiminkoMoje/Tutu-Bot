@@ -59,8 +59,18 @@ module.exports = {
       }
       return 0;
     }
-
     list.sort(compare);
+
+    //sort by query
+    var xi = 0
+    for (var x = 0; x < list.length; x++) {
+      if (args.join(' ').trimStart() === list[x].word.toLowerCase()) {
+        var element = list[x];
+        list.splice(x, 1);
+        list.splice(xi, 0, element);
+        xi = xi + 1
+      }
+    }
 
     //uEnd is used for an error message below
     var uEnd
