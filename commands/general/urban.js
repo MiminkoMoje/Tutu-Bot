@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const querystring = require('querystring');
 const Discord = require('discord.js');
+const { ReactionCollector } = require('discord.js-collector')
 require(`${require.main.path}/events/embeds.js`)();
 
 module.exports = {
@@ -84,109 +85,146 @@ module.exports = {
       uEnd = 'th'
     }
 
+    definition(list, args, i)
+
     //if user included a result number but there is no such result, show error. uEnd is used. otherwise put definition in uResult
-    try {
-      var uResult = list[i].definition
-    } catch (err) {
-      const errorMsg = `There is no ${i + 1}${uEnd} definition of *${args.join(' ').trimStart()}*.`
-      return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+    async function definition(list, args, i) {
+      try {
+        var uResult = list[i].definition
+      } catch (err) {
+        const errorMsg = `There is no ${i + 1}${uEnd} definition of *${args.join(' ').trimStart()}*.`
+        return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+      }
+
+      //check if example exists. rare case but it happens
+      if (list[i].example !== "") {
+        var uExample = list[i].example
+      }
+      else { var uExample = "" }
+
+      //put everything in variables
+      var uTerm = list[i].word //the word as it is stored in urban dict.
+      var uUrl = list[i].permalink //link of the definition, we use it in embed so the user has the option to click the title and visit it
+      var uAuthor = list[i].author //the author of the definition
+      var uDate = list[i].written_on.substring(0, 10) //the date, its very messy, so we only take a section of it and we change it below
+      var uLikes = list[i].thumbs_up //the likes of the definition (left by other users on urban dict.)
+      var uDislikes = list[i].thumbs_down //and the dislikes
+      uResult = uResult.replace(/[\[\]']+/g, '');
+      uExample = uExample.replace(/[\[\]']+/g, '');
+
+      //the date variable is a mess, so we make it beautiful
+      var uMonth
+      if (uDate.substring(5, 7) === '01') {
+        uMonth = 'January'
+      } else if (uDate.substring(5, 7) === '02') {
+        uMonth = 'February'
+      } else if (uDate.substring(5, 7) === '03') {
+        uMonth = 'March'
+      } else if (uDate.substring(5, 7) === '04') {
+        uMonth = 'April'
+      } else if (uDate.substring(5, 7) === '05') {
+        uMonth = 'May'
+      } else if (uDate.substring(5, 7) === '06') {
+        uMonth = 'June'
+      } else if (uDate.substring(5, 7) === '07') {
+        uMonth = 'July'
+      } else if (uDate.substring(5, 7) === '08') {
+        uMonth = 'August'
+      } else if (uDate.substring(5, 7) === '09') {
+        uMonth = 'September'
+      } else if (uDate.substring(5, 7) === '10') {
+        uMonth = 'October'
+      } else if (uDate.substring(5, 7) === '11') {
+        uMonth = 'November'
+      } else if (uDate.substring(5, 7) === '12') {
+        uMonth = 'December'
+      }
+      var uFullDate = `${uMonth} ${uDate.substring(8, 10)}, ${uDate.substring(0, 4)}` //we put beautiful date in a var
+
+      var uResultArray = []
+      var uExampleArray = []
+
+      var y
+
+      var uResLenght = uResult.length / 1020;
+      for (y = 0; y < uResLenght; y++) {
+        uResultArray[y] = uResult.slice(1020 * y, (1020 * y) + 1020);
+      }
+
+      var uExLenght = uExample.length / 1020;
+      for (y = 0; y < uExLenght; y++) {
+        uExampleArray[y] = uExample.slice(1020 * y, (1020 * y) + 1020);
+      }
+
+      var resultEmbed = new Discord.MessageEmbed()
+        .setColor(tutuColor)
+        .setTitle(uTerm)
+        .setURL(uUrl)
+        .setFooter(`Requested by ${message.author.tag} 💜 | ${i + 1}/${list.length}`, message.author.avatarURL())
+
+      y = 0
+      while (uResLenght > 0 || uExLenght > 0) {
+
+        if (y > 0) {
+          var uResTitle = `Definition (part ${y + 1})`
+          var uExTitle = `Example (part ${y + 1})`
+        } else {
+          var uResTitle = `Definition`
+          var uExTitle = `Example`
+        }
+
+        if (uResLenght > 0) {
+          resultEmbed.addField(uResTitle, uResultArray[y])
+          uResLenght = uResLenght - 1
+        }
+
+        if (uExLenght > 0) {
+          resultEmbed.addField(uExTitle, uExampleArray[y])
+          uExLenght = uExLenght - 1
+        }
+
+        if (y === 0) {
+          resultEmbed.addField('Info', `By ${uAuthor} on ${uFullDate}\n👍${uLikes} | 👎${uDislikes}`)
+        }
+
+        y++
+
+        var botMessage = await message.channel.send(resultEmbed);
+        resultEmbed.fields = [];
+      }
+      reaction(list, args, i, botMessage)
     }
 
-    //check if example exists. rare case but it happens
-    if (list[i].example !== "") {
-      var uExample = list[i].example
-    }
-    else { var uExample = "" }
+    function reaction(list, args, i, botMessage) {
 
-    //put everything in variables
-    var uTerm = list[i].word //the word as it is stored in urban dict.
-    var uUrl = list[i].permalink //link of the definition, we use it in embed so the user has the option to click the title and visit it
-    var uAuthor = list[i].author //the author of the definition
-    var uDate = list[i].written_on.substring(0, 10) //the date, its very messy, so we only take a section of it and we change it below
-    var uLikes = list[i].thumbs_up //the likes of the definition (left by other users on urban dict.)
-    var uDislikes = list[i].thumbs_down //and the dislikes
-    uResult = uResult.replace(/[\[\]']+/g, '');
-    uExample = uExample.replace(/[\[\]']+/g, '');
-
-    //the date variable is a mess, so we make it beautiful
-    var uMonth
-    if (uDate.substring(5, 7) === '01') {
-      uMonth = 'January'
-    } else if (uDate.substring(5, 7) === '02') {
-      uMonth = 'February'
-    } else if (uDate.substring(5, 7) === '03') {
-      uMonth = 'March'
-    } else if (uDate.substring(5, 7) === '04') {
-      uMonth = 'April'
-    } else if (uDate.substring(5, 7) === '05') {
-      uMonth = 'May'
-    } else if (uDate.substring(5, 7) === '06') {
-      uMonth = 'June'
-    } else if (uDate.substring(5, 7) === '07') {
-      uMonth = 'July'
-    } else if (uDate.substring(5, 7) === '08') {
-      uMonth = 'August'
-    } else if (uDate.substring(5, 7) === '09') {
-      uMonth = 'September'
-    } else if (uDate.substring(5, 7) === '10') {
-      uMonth = 'October'
-    } else if (uDate.substring(5, 7) === '11') {
-      uMonth = 'November'
-    } else if (uDate.substring(5, 7) === '12') {
-      uMonth = 'December'
-    }
-    var uFullDate = `${uMonth} ${uDate.substring(8, 10)}, ${uDate.substring(0, 4)}` //we put beautiful date in a var
-
-    var uResultArray = []
-    var uExampleArray = []
-
-    var y
-
-    var uResLenght = uResult.length / 1020;
-    for (y = 0; y < uResLenght; y++) {
-      uResultArray[y] = uResult.slice(1020 * y, (1020 * y) + 1020);
-    }
-
-    var uExLenght = uExample.length / 1020;
-    for (y = 0; y < uExLenght; y++) {
-      uExampleArray[y] = uExample.slice(1020 * y, (1020 * y) + 1020);
-    }
-
-    var resultEmbed = new Discord.MessageEmbed()
-      .setColor(tutuColor)
-      .setTitle(uTerm)
-      .setURL(uUrl)
-      .setFooter(`Requested by ${message.author.tag} 💜 | ${i + 1}/${list.length}`, message.author.avatarURL())
-
-    y = 0
-    while (uResLenght > 0 || uExLenght > 0) {
-
-      if (y > 0) {
-        var uResTitle = `Definition (part ${y + 1})`
-        var uExTitle = `Example (part ${y + 1})`
+      if (i+1 === list.length) {
+        reactions = {
+          '◀': async () => await definition(list, args, i - 1),
+        }
+      } else if (i === 0) {
+        reactions = {
+          '▶': async () => await definition(list, args, i + 1),
+        }
       } else {
-        var uResTitle = `Definition`
-        var uExTitle = `Example`
+        reactions = {
+          '◀': async () => await definition(list, args, i - 1),
+          '▶': async () => await definition(list, args, i + 1),
+        }
       }
 
-      if (uResLenght > 0) {
-        resultEmbed.addField(uResTitle, uResultArray[y])
-        uResLenght = uResLenght - 1
-      }
+      // reactions = {
+      //     '◀': async () => await definition(list, args, i - 1),
+      //     '▶': async () => await definition(list, args, i + 1),
+      //   }
 
-      if (uExLenght > 0) {
-        resultEmbed.addField(uExTitle, uExampleArray[y])
-        uExLenght = uExLenght - 1
-      }
-
-      if (y === 0) {
-        resultEmbed.addField('Info', `By ${uAuthor} on ${uFullDate}\n👍${uLikes} | 👎${uDislikes}`)
-      }
-
-      y++
-
-      message.channel.send(resultEmbed);
-      resultEmbed.fields = [];
+      ReactionCollector.question({
+        botMessage,
+        user: message.author,
+        reactions,
+        collectorOptions: {
+          time: 6000000
+        }
+      });
     }
   },
 };
