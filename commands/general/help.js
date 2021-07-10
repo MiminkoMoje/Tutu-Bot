@@ -1,4 +1,5 @@
 const { nsfwDisableGuildID } = require(`${require.main.path}/config.json`);
+const { prefix } = require(`${require.main.path}/config.json`);
 require(`${require.main.path}/events/embeds.js`)();
 const Discord = require('discord.js');
 
@@ -14,14 +15,14 @@ module.exports = {
                 .setDescription(`Mmmmmmmm 🤤 I see that you need something to satisfy your.... needs........😏 ahaaaaaaa.... now... what command will you........ choose, yk what I'm sayin'? 😏 Mmmmmmmmmmm.... go ahead..... I promise I won't look.... 😏 ....unless??????? 😳`)
                 .setFooter(`Requested by ${message.author.tag} 💜`, message.author.avatarURL())
                 .addFields(
-                    { name: ',nsfw', value: `*r/porn, r/NSFW_GIF, r/nsfw_gifs, r/The_Best_NSFW_GIFS, r/nsfwhardcore, r/VerticalGifs, r/gifsgonewild*: General NSFW gifs and porn` },
-                    { name: ',nudes', value: `*r/Nude_Selfie, r/RealGirls, r/LegalTeens, r/collegesluts*: Cute™ girls sharing (for some weird reason) their nudes online` },
-                    { name: ',lesbians', value: `*r/lesbians, r/Lesbian_gifs*: They do be kinda hot tho ngl` },
-                    { name: ',rule34', value: `*r/rule34*: In case you're into... this` },
-                    { name: ',hentai', value: `*r/hentai, r/HENTAI_GIF*` },
-                    { name: ',boobs', value: `*r/Boobies*: Boobies. Girl boobies.` },
-                    { name: ',blowjob', value: `*r/Blowjob*: No head? No problem` },
-                    { name: ',threesome', value: `*r/Xsome, r/Threesome, r/groupsex*: Threesomes, foursomes, fivesomes, etc. The more the better` },
+                    { name: `${prefix}nsfw`, value: `*r/porn, r/nsfw_gifs, r/The_Best_NSFW_GIFS, r/nsfwhardcore, r/VerticalGifs*: General NSFW gifs and porn` },
+                    { name: `${prefix}nudes`, value: `*r/Nude_Selfie, r/RealGirls, r/LegalTeens, r/collegesluts*: Cute™ girls sharing (for some weird reason) their nudes online` },
+                    { name: `${prefix}lesbians`, value: `*r/lesbians, r/Lesbian_gifs*: They do be kinda hot tho ngl` },
+                    { name: `${prefix}rule34`, value: `*r/rule34*: In case you're into... this` },
+                    { name: `${prefix}hentai`, value: `*r/hentai, r/HENTAI_GIF*` },
+                    { name: `${prefix}boobs`, value: `*r/Boobies*: Boobies. Girl boobies.` },
+                    { name: `${prefix}blowjob`, value: `*r/Blowjob*: No head? No problem` },
+                    { name: `${prefix}threesome`, value: `*r/Xsome, r/Threesome, r/groupsex*: Threesomes, foursomes, fivesomes, etc. The more the better` },
                 )
 
             if (message.channel.type !== 'dm') {
@@ -41,16 +42,18 @@ module.exports = {
                 .setDescription(`These are the available commands for now, new ones getting added frequently. [Press here](https://imvasi.com/#commands) to see a more detailed command list.`)
                 .setFooter(`Requested by ${message.author.tag} 💜`, message.author.avatarURL())
                 .addFields(
-                    { name: ',help', value: 'This command eliminates racism and brings you good luck for 8.2 years' },
-                    { name: ',reddit [subreddit]', value: 'Shows a random submission from a subreddit' },
-                    { name: ',reddit [subreddit] top (hour/day/week/month/year/all)', value: 'Shows the top posts of a subreddit' },
-                    { name: ',urban [term]', value: 'Shows the definition of any term using Urban Dictionary 😳' },
-                    { name: ',dankmemes', value: 'Shows a random meme from *r/dankmemes*' },
-                    { name: ',cat', value: 'Shows a random picture of a meow 🥺' },
+                    { name: `${prefix}help`, value: 'This command eliminates racism and brings you good luck for 8.2 years' },
+                    { name: `${prefix}reddit [subreddit]`, value: 'Shows a random submission from a subreddit' },
+                    { name: `${prefix}reddit [subreddit] top (hour/day/week/month/year/all)`, value: 'Shows the top posts of a subreddit' },
+                    { name: `${prefix}urban [term]`, value: 'Shows the definition of any term using Urban Dictionary 😳' },
+                    { name: `${prefix}dankmemes`, value: 'Shows a random meme from *r/dankmemes* & *r/memes*' },
+                    { name: `${prefix}cat`, value: 'Shows a random picture of a meow 🥺' },
+                    { name: `${prefix}elephants`, value: 'Shows elephants from *r/babyelephantgifs* 🐘' },
+                    { name: `${prefix}turtles`, value: 'Shows turtles from *r/turtle* & *r/turtles* 🐢' },
                 )
             if (message.channel.type !== 'dm') {
                 if (nsfwDisableGuildID.includes(message.guild.id) === false) {
-                    helpEmbed.addField(',help nsfw', `Feeling kinda........😏😏 No? Okay sorry`)
+                    helpEmbed.addField(`${prefix}help nsfw`, `Feeling kinda........😏😏 No? Okay sorry`)
                 }
             }
 
