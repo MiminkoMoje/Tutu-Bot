@@ -232,14 +232,14 @@ module.exports = function () {
         }
 
         var post;
-        //console.log(subreddit)
+
         try {
             if (!subreddits) {
                 var subreddits = subreddit
             }
 
             if (Array.isArray(subreddits)) {
-                const subNum = Math.floor(Math.random() * subreddits.length);
+                const subNum = Math.random() * subreddits.length | 0;
                 subreddit = subreddits[subNum]
             }
 
