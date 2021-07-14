@@ -49,7 +49,6 @@ module.exports = {
                     { name: `${prefix}dankmemes`, value: 'Shows a random meme from *r/dankmemes* & *r/memes*' },
                     { name: `${prefix}cat`, value: 'Shows a random picture of a meow 🥺' },
                     { name: `${prefix}elephants`, value: 'Shows elephants from *r/babyelephantgifs* 🐘' },
-                    { name: `${prefix}turtles`, value: 'Shows turtles from *r/turtle* & *r/turtles* 🐢' },
                 )
             if (message.channel.type !== 'dm') {
                 if (nsfwDisableGuildID.includes(message.guild.id) === false) {
