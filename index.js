@@ -28,7 +28,7 @@ for (const file of eventFiles) {
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.username}!`)
-    client.user.setActivity('for ,help', { type: 'WATCHING' })
+    client.user.setActivity(`for ${prefix}help`, { type: 'WATCHING' })
     global.tutuColor = 7799039
     global.errorColor = 16724787
 });
