@@ -18,11 +18,11 @@ Browse Reddit right from your Discord server.
 - Quickly get any definition from [Urban Dictionary](https://www.urbandictionary.com/)
 - Includes examples, likes and dislikes, date, and author
 
-#### See all the available commands [here](https://imvasi.com/#commands)
+#### See all the available commands [here](https://imvasi.com/tutubot/#commands)
 
 ## Add it to your server
 
-Invite Tutu Bot to your server here: https://imvasi.com
+Invite Tutu Bot to your server here: https://imvasi.com/tutubot
 
 If you want to host the bot by yourself, make changes or contribute, read below.
 
