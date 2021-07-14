@@ -47,7 +47,7 @@ client.on('message', message => {
 
     try {
         if (bannedUserID.includes(message.author.id)) {
-            const errorMsg = `You have been banned from using this bot.`
+            const errorMsg = `You have been blocked from using Tutu Bot.`
             return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
         }
 
@@ -85,7 +85,7 @@ client.on('message', message => {
 
     } catch (error) {
         console.error(error);
-        const errorMsg = `An error occured trying to execute that command, please contact <@${ownerId}>.`
+        const errorMsg = `An error occured trying to execute that command, please contact Vasilis#1517.`
         return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
     }
 
