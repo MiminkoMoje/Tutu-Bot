@@ -35,12 +35,12 @@ module.exports = function () {
     //format and send post
     async function redditPost(post, args, rType, message, subreddit, subreddits) {
             try {
-                if (post.removed_by_category === 'deleted') {
+            if (post.removed_by_category === 'deleted') {  //check if post is deleted
                     const errorMsg = `[This](${post.url}) post has been deleted.`
                     return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
                 }
 
-                if (post.over_18 === true && !message.channel.nsfw) {
+            if (post.over_18 === true && !message.channel.nsfw) { //check if post is nsfw if not using an nsfw channel
                     const rNsfw = {
                         "title": `Error`,
                         "description": `[This](https://reddit.com${post.permalink}) is a NSFW post, please use a NSFW channel.`,
@@ -51,7 +51,7 @@ module.exports = function () {
                         },
                     };
 
-                    botMessage = await message.channel.send({ embed: rNsfw });
+                botMessage = await message.channel.send({ embed: rNsfw }); //so that the reactions still work on the nsfw error
 
                     if (rType === 'top') {
                     return redditTop(botMessage, rListing, args, rType, message, subreddit)
@@ -86,7 +86,7 @@ module.exports = function () {
 
                 if (hasTxt === true) {
                 if (rType === 'random-predefined-image') {
-                    return redditGetPost(args, message, subreddit, rType)
+                    return redditGetPost(args, message, subreddit, rType, subreddits)
                 }
                     var rText = []
                     var size = subText.length / 4096;
@@ -151,7 +151,7 @@ module.exports = function () {
                         rMessage = rMessage.concat(`${post.url}\n`)
                     } else {
                     if (rType === 'random-predefined-image') {
-                        return redditGetPost(args, message, subreddit, rType)
+                        return redditGetPost(args, message, subreddit, rType, subreddits)
                     }
                         rMessage = rMessage.concat(`\n`)
                     }
