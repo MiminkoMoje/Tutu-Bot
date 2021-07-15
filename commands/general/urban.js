@@ -192,12 +192,15 @@ module.exports = {
         var botMessage = await message.channel.send(resultEmbed);
         resultEmbed.fields = [];
       }
-      reaction(list, args, i, botMessage)
+      
+      if (list.length > 1) {
+        reaction(list, args, i, botMessage)
+      }
     }
 
     function reaction(list, args, i, botMessage) {
 
-      if (i+1 === list.length) {
+      if (i + 1 === list.length) {
         reactions = {
           '◀': async () => await definition(list, args, i - 1),
         }
