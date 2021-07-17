@@ -25,14 +25,10 @@ module.exports = {
                     { name: `${prefix}threesome`, value: `*r/Xsome, r/Threesome, r/groupsex*: Threesomes, foursomes, fivesomes, etc. The more the better` },
                 )
 
-            if (message.channel.type !== 'dm') {
-                if (nsfwDisableGuildID.includes(message.guild.id) === false) {
-                    message.channel.send(nsfwEmbed);
-                } else {
-                    return errorNsfwDisabled(message, message.author.avatarURL(), message.author.tag)
-                }
-            } else {
+            if (nsfwDisableGuildID.includes(message.guild.id) === false) {
                 message.channel.send(nsfwEmbed);
+            } else {
+                return errorNsfwDisabled(message, message.author.avatarURL(), message.author.tag)
             }
 
         } else {
@@ -50,10 +46,8 @@ module.exports = {
                     { name: `${prefix}cat`, value: 'Shows a random picture of a meow 🥺' },
                     { name: `${prefix}elephants`, value: 'Shows elephants from *r/babyelephantgifs* 🐘' },
                 )
-            if (message.channel.type !== 'dm') {
-                if (nsfwDisableGuildID.includes(message.guild.id) === false) {
-                    helpEmbed.addField(`${prefix}help nsfw`, `Feeling kinda........😏😏 No? Okay sorry`)
-                }
+            if (nsfwDisableGuildID.includes(message.guild.id) === false) {
+                helpEmbed.addField(`${prefix}help nsfw`, `Feeling kinda........😏😏 No? Okay sorry`)
             }
 
             message.channel.send(helpEmbed);
