@@ -1,9 +1,7 @@
 module.exports = {
   name: 'blowjob',
   aliases: ['bj', 'blowjobs', 'sucking'],
-  description: 'Shows random post of r/Blowjob.',
-  guildOnly: true,
-  nsfwDisable: true,
+  description: 'Shows random post of r/Blowjobs.',
   nsfwCommand: true,
   async execute(message, args) {
     const subreddit = ['Blowjobs']

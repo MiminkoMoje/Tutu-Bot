@@ -6,10 +6,8 @@ require(`${require.main.path}/events/embeds.js`)();
 
 module.exports = {
   name: 'urban',
-  aliases: ['ud', 'uds', 'urbandictionary', 'urban-dictionary', 'udict', 'udictionary', 'urband', 'urbandict'],
+  aliases: ['ud', 'uds', 'urbandictionary', 'urban-dictionary', 'udict', 'udictionary', 'urband', 'urbandict', 'u'],
   description: 'Shows the Urban Definition of your query.',
-
-  //first version: May/June 2020
 
   //start
   async execute(message, args) {
@@ -192,7 +190,7 @@ module.exports = {
         var botMessage = await message.channel.send(resultEmbed);
         resultEmbed.fields = [];
       }
-        reaction(list, args, i, botMessage)
+      reaction(list, args, i, botMessage)
     }
 
     function reaction(list, args, i, botMessage) {

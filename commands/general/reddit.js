@@ -4,7 +4,6 @@ const { MessageButton } = require("discord-buttons")
 const { ReactionCollector } = require('discord.js-collector')
 const { redditCredentials } = require(`${require.main.path}/config.json`);
 require(`${require.main.path}/events/embeds.js`)();
-require(`${require.main.path}/commands/vasilis/reddit-log.js`)();
 
 //connect with account
 module.exports = function () {

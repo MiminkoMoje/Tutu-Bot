@@ -1,15 +1,12 @@
 module.exports = {
   name: 'nsfw',
-  aliases: ['porn', 'sex'],
+  aliases: ['porn', 'sex', 'nsfwhardcore', 'the_best_nsfw_gifs', 'nsfw_gifs', 'verticalgifs'],
   description: 'Shows random post of multiple nsfw subreddits.',
-  guildOnly: true,
-  nsfwDisable: true,
   nsfwCommand: true,
   async execute(message, args) {
     const subreddit = [
       'nsfwhardcore',
       'nsfw',
-      //'NSFW_GIF',
       'The_Best_NSFW_GIFS',
       'nsfw_gifs',
       'VerticalGifs',

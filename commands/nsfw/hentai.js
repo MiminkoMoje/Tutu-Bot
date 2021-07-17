@@ -1,8 +1,7 @@
 module.exports = {
   name: 'hentai',
+  aliases: ['hentai_gif'],
   description: 'Shows random post of r/hentai or r/HENTAI_GIF.',
-  guildOnly: true,
-  nsfwDisable: true,
   nsfwCommand: true,
   async execute(message, args) {
     const subreddit = ['hentai', 'HENTAI_GIF']
