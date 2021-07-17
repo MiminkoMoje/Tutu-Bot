@@ -56,7 +56,7 @@ module.exports = function () {
     this.errorNsfwDisabled = function (message, avatarURL, authorTag) {
         const embed = {
             "title": `Error`,
-            "description": `The NSFW commands are disabled for this server. Please contact <@${ownerId}> if you want them enabled.`,
+            "description": `The NSFW commands are disabled for this server.`,
             "color": errorColor,
             "footer": {
                 "icon_url": avatarURL,
