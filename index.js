@@ -57,8 +57,13 @@ client.on('message', message => {
             return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
         }
 
-        if (command.guildOnly && message.channel.type === 'dm') {
-            return errorGuildOnly(message, message.author.avatarURL(), message.author.tag)
+        // if (command.guildOnly && message.channel.type === 'dm') {
+        //     return errorGuildOnly(message, message.author.avatarURL(), message.author.tag)
+        // } no longer needed
+
+        if (message.channel.type === 'dm') {
+            const errorMsg = `You can't use commands here! Use a server.`
+            return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
         }
 
         if (command.nsfwDisable && nsfwDisableGuildID.includes(message.guild.id)) {
