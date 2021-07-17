@@ -227,7 +227,6 @@ module.exports = function () {
     //get reddit post
     this.redditGetPost = async function (args, message, subreddit, rType, subreddits, time) {
         subreddits = subreddits || 0;
-        console.log(rType)
         if (!subreddit) {
             const errorMsg = `Please provide a subreddit.`
             return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
@@ -276,7 +275,6 @@ module.exports = function () {
                 })
             } else {
                 post = await r.getRandomSubmission(subreddit);
-                rType = 'random'
                 redditPost(post, args, rType, message, subreddit)
             }
             //console.log(post)
