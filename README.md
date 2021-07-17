@@ -2,59 +2,78 @@
 
 # Tutu Bot
 
-A powerful Reddit-focused Discord bot:
+A powerful, Reddit-focused Discord bot.
 
-- Get random posts from any subreddit
-- Get the top posts of the hour/day/week/month/year/overall
-- Get any posts by their ID  
+Invite it to your server: https://imvasi.com/tutubot
 
-- Uses reactions and buttons for fast and easy browsing
-- Pre-defined commands for specific subreddits for a more user-friendly use, such as commands for memes, NSFW content and more
-- NSFW protection, NSFW posts can only be shown in NSFW channels  
+## Features 
 
-Browse Reddit right from your Discord server.
+### Reddit
 
-### Ubran Dictionary
-- Quickly get any definition from [Urban Dictionary](https://www.urbandictionary.com/)
-- Includes examples, likes and dislikes, date, and author
+- 🔀 Get random posts of any subreddit
+- 🔝 Get top posts, hourly/daily/weekly/monthly/yearly/overall
+- 🆔 Get posts by their ID
+- 💨 Easy and fast navigation with reactions
+- 🔞 NSFW protection, such posts are only shown in NSFW channels
+- 😌 Many predefined, user-friendly subreddit commands, for memes, cute animals, etc. with more getting added over time
 
-#### See all the available commands [here](https://imvasi.com/tutubot/#commands)
+### Urban Dictionary
 
-## Add it to your server
+- 🔎 Get definitions for anything, using [Urban Dictionary](https://www.urbandictionary.com/)
+- 💬 Includes examples, likes & dislikes, and author
+- 💨 Easy and fast navigation with reactions
 
-Invite Tutu Bot to your server here: https://imvasi.com/tutubot
+## Installation
 
-If you want to host the bot by yourself, make changes or contribute, read below.
+### Hosted Version
 
-## Host it by yourself
+Tutu Bot is already hosted by me and is running 24/7.  
+You can invite it to your server here:  
+https://imvasi.com/tutubot
 
-If you've decided to host the bot by youself, you'll need to follow these steps:  
+### Install & Host by yourself
 
-Firstly, clone the repo
+There are many reasons why you would want to do that, such as customizing the bot to your likings.
+You must follow these instructuons in order to install it properly:
+
+Clone the repo
 ```
 git clone https://github.com/down-bad/TutuBot.git
 ```
-After cloning, run
+Then, run
 ```
 npm install
 ```
-to install the required dependencies. Obviously, you need [node](https://nodejs.org/en/) installed.
+to install the required dependencies. Make sure you have [Node](https://nodejs.org/en/) installed.
 
-## Set up
+#### Edit the configuration
 
-- Rename the `rename_me.json` file to `config.json`.
-- Now, open it and fill out the required information:
-  - `token`: Your token
-  - `ownerID`: Your Discord user ID
+Rename the `rename_me.json` file to `config.json`.
 
-  - `redditCredentials`: This bot uses Reddit for some commands and most of the NSFW ones. In order to set up Reddit for the bot:
-    - Go to [Authorized applications](https://reddit.com/prefs/apps/)
-    - Press "Create an app"
-    - Enter an application name, a description and a redirect uri (if you're not sure about the redirect uri, just put `http://localhost:8080`)
-    - Choose "script" in the list - that's important
-    - Press the "Create app" button
+Fill out the required information:
+- `token`: Your bot token
+- `ownerID`: Your Discord user ID
+
+You need to obtain a Reddit app ID & secret hash in order to use the Reddit functionality of this bot, using the following instructions:
+- Go to [Authorized applications](https://reddit.com/prefs/apps/)
+- Press "Create an app"
+- Enter an application name, a description and a redirect uri (if you're not sure about the redirect uri, just put `http://localhost:8080`)
+- Choose "script" in the list - that's important
+- Press the "Create app" button
 
 You will get the app's ID under the "personal use script" line and the secret hash.  
-So now, in `config.json`, you can fill the required Reddit information.  
 
-Run `index.js` to give life to the bot. (`node index.js`)
+In `config.json`, fill out the `redditCredentials`:
+- `username`: Your Reddit username
+- `password`: Your Reddit password
+- `app_id`: The app ID you obtained above
+- `api_secret`: The secret hash you obtained above
+
+Make sure you're using the Reddit account that you got the ID with.
+
+Run
+```
+node index.js
+```
+to run the bot.  
+Enjoy!
