@@ -13,7 +13,7 @@ module.exports = {
                 .setColor(tutuColor)
                 .setTitle(`NSFW Commands`)
                 .setDescription(`Mmmmmmmm 🤤 I see that you need something to satisfy your.... needs........😏 ahaaaaaaa.... now... what command will you........ choose, yk what I'm sayin'? 😏 Mmmmmmmmmmm.... go ahead..... I promise I won't look.... 😏 ....unless??????? 😳`)
-                .setFooter(`Requested by ${message.author.tag} 💜`, message.author.avatarURL())
+                .setFooter(`Requested by ${message.author.tag} ${tutuEmote}`, message.author.avatarURL())
                 .addFields(
                     { name: `${prefix}nsfw`, value: `*r/porn, r/nsfw_gifs, r/The_Best_NSFW_GIFS, r/nsfwhardcore, r/VerticalGifs*: General NSFW gifs and porn` },
                     { name: `${prefix}nudes`, value: `*r/Nude_Selfie, r/RealGirls, r/LegalTeens, r/collegesluts*: Cute™ girls sharing (for some weird reason) their nudes online` },
@@ -40,7 +40,7 @@ module.exports = {
                 .setColor(tutuColor)
                 .setTitle(`Commands`)
                 .setDescription(`These are the available commands for now, new ones getting added frequently. [Press here](https://imvasi.com/tutubot/#commands) to see a more detailed command list.`)
-                .setFooter(`Requested by ${message.author.tag} 💜`, message.author.avatarURL())
+                .setFooter(`Requested by ${message.author.tag} ${tutuEmote}`, message.author.avatarURL())
                 .addFields(
                     { name: `${prefix}help`, value: 'This command eliminates racism and brings you good luck for 8.2 years' },
                     { name: `${prefix}reddit [subreddit]`, value: 'Shows a random submission from a subreddit' },

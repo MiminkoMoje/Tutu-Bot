@@ -101,7 +101,7 @@ module.exports = function () {
                             .setColor(tutuColor)
                             .setTitle(post.title)
                             .setURL(`https://www.reddit.com${post.permalink}`)
-                            .setFooter(`Requested by ${message.author.tag} 💜 | [${post.id}]`, message.author.avatarURL())
+                        .setFooter(`Requested by ${message.author.tag} ${tutuEmote} | [${post.id}]`, message.author.avatarURL())
                             .setDescription(rText[i])
 
                         rAuthor = `${post.subreddit_name_prefixed} •`
@@ -155,7 +155,7 @@ module.exports = function () {
                     }
                         rMessage = rMessage.concat(`\n`)
                     }
-                    rMessage = rMessage.concat(`Requested by ${message.author.tag} 💜 | [${post.id}]`)
+                rMessage = rMessage.concat(`Requested by ${message.author.tag} ${tutuEmote} | [${post.id}]`)
                     
                     let rButton = new MessageButton()
                         .setLabel("Open on Reddit")

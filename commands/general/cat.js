@@ -16,7 +16,7 @@ module.exports = {
             "color": tutuColor,
             "footer": {
                 "icon_url": message.author.avatarURL(),
-                "text": `Requested by ${message.author.tag} 💜`,
+                "text": `Requested by ${message.author.tag} ${tutuEmote}`,
             },
             "image": {
                 "url": file
