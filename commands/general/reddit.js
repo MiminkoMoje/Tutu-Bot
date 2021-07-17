@@ -225,7 +225,9 @@ module.exports = function () {
     }
 
     //get reddit post
-    this.redditGetPost = async function (args, message, subreddit, rType, subreddits) {
+    this.redditGetPost = async function (args, message, subreddit, rType, subreddits, time) {
+        subreddits = subreddits || 0;
+        console.log(rType)
         if (!subreddit) {
             const errorMsg = `Please provide a subreddit.`
             return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
@@ -234,7 +236,7 @@ module.exports = function () {
         var post;
 
         try {
-            if (!subreddits) {
+            if (subreddits === 0) {
                 var subreddits = subreddit
             }
 
@@ -245,21 +247,31 @@ module.exports = function () {
 
             if (rType.includes('random-predefined')) {
                 post = await r.getRandomSubmission(subreddit);
-                redditPost(post, args, rType, message, subreddit, subreddits)
+                return redditPost(post, args, rType, message, subreddit, subreddits)
             }
 
-            else if (args[1] === 'id' || args[1] === 'i') {
-                post = await r.getSubmission(subreddit).fetch();
+            if (rType === 'reddit' || !rType) {
+                if (args[1] === 'id' || args[1] === 'i') {
                 rType = 'id'
-                redditPost(post, args, rType, message, subreddit)
             } else if (args[1] === 'top') {
                 if (args[2] !== 'hour' && args[2] !== 'day' && args[2] !== 'week' && args[2] !== 'month' && args[2] !== 'year' && args[2] !== 'all') {
-                    args[2] = 'day'
+                        time = 'day';
+                    } else {
+                        time = args[2];
                 }
-                await r.getTop(args[0], { time: args[2], limit: 1 }).then(async Listing => {
+                    rType = 'top';
+                } else {
+                    rType = 'random';
+                }
+            }
+
+            if (rType === 'id') {
+                post = await r.getSubmission(subreddit).fetch();
+                redditPost(post, args, rType, message, subreddit)
+            } else if (rType === 'top') {
+                await r.getTop(args[0], { time: time, limit: 1 }).then(async Listing => {
                     post = Listing[0]
                     rListing = Listing
-                    rType = 'top'
                     redditPost(post, args, rType, message, subreddit)
                 })
             } else {
