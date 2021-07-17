@@ -192,33 +192,16 @@ module.exports = {
         var botMessage = await message.channel.send(resultEmbed);
         resultEmbed.fields = [];
       }
-      
-      if (list.length > 1) {
         reaction(list, args, i, botMessage)
-      }
     }
 
     function reaction(list, args, i, botMessage) {
 
-      if (i + 1 === list.length) {
+      if (i + 1 < list.length) {
         reactions = {
-          '◀': async () => await definition(list, args, i - 1),
+          '⏩': async () => await definition(list, args, i + 1),
         }
-      } else if (i === 0) {
-        reactions = {
-          '▶': async () => await definition(list, args, i + 1),
-        }
-      } else {
-        reactions = {
-          '◀': async () => await definition(list, args, i - 1),
-          '▶': async () => await definition(list, args, i + 1),
-        }
-      }
-
-      // reactions = {
-      //     '◀': async () => await definition(list, args, i - 1),
-      //     '▶': async () => await definition(list, args, i + 1),
-      //   }
+      } else return;
 
       ReactionCollector.question({
         botMessage,
