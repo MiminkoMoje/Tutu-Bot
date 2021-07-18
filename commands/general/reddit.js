@@ -4,6 +4,7 @@ const { MessageButton } = require("discord-buttons")
 const { ReactionCollector } = require('discord.js-collector')
 const { redditCredentials } = require(`${require.main.path}/config.json`);
 require(`${require.main.path}/events/embeds.js`)();
+const { prefix } = require(`${require.main.path}/config.json`);
 
 //connect with account
 module.exports = function () {
@@ -273,6 +274,10 @@ module.exports = function () {
         })
       } else {
         post = await r.getRandomSubmission(subreddit);
+        if (Array.isArray(post)) {
+          const errorMsg = `There is an error getting a random post for this subreddit. I am extremely sorry about that and I'm doing my best to resolve & figure out this issue.\n\nFor now, you can still use the *${prefix}top ${subreddit}* command to get the top posts of this subreddit.\n\nFeedback: https://imvasi.com/tutubot/feedback\nVasilis#1517`
+          return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+        }
         redditPost(post, args, rType, message, subreddit)
       }
 
