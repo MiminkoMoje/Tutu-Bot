@@ -275,7 +275,7 @@ module.exports = function () {
       } else {
         post = await r.getRandomSubmission(subreddit);
         if (Array.isArray(post)) {
-          const errorMsg = `There is an error getting a random post for this subreddit. [This bug](https://github.com/not-an-aardvark/snoowrap/issues/247) is out of my control as it's about [Snoowrap](https://github.com/not-an-aardvark/snoowrap/), the Reddit wrapper that this bot uses to get posts. I am extremely sorry about that and I'm doing my best to figure out a solution.\n\nFortunately, for now, you can still use the *${prefix}top ${subreddit}* command to get the top posts of this subreddit.\n\nFeedback: https://imvasi.com/tutubot/feedback\nVasilis#1517`
+          const errorMsg = `This subreddit doesn't support random posts. Please, use the **${prefix}top** command instead.`
           return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
         }
         redditPost(post, args, rType, message, subreddit)
