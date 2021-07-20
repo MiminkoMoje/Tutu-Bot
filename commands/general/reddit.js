@@ -284,7 +284,10 @@ module.exports = function () {
     } catch (error) {
       if (error.statusCode === 503) {
         return error503Reddit(message, message.author.avatarURL(), message.author.tag)
-      } else if (error.error.message) {
+      } else if (error.error.error === 404) {
+        return errorNoResults(message, message.author.avatarURL(), message.author.tag)
+      }
+       else if (error.error.message) {
         const errorMsg = `Error ${error.error.error}: ${error.error.message} (${error.error.reason})`
         return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
       }
