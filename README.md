@@ -13,7 +13,7 @@ Invite it to your server: https://imvasi.com/tutubot
 - 🔀 Get random posts of any subreddit
 - 🔝 Get top posts, hourly/daily/weekly/monthly/yearly/overall
 - 🆔 Get posts by their ID
-- 👤 Get any user's posts
+- 👤 Get posts from any Reddit user
 - 💨 Easy and fast navigation with reactions
 - 🔞 NSFW protection, such posts are only shown in NSFW channels
 - 😌 Many predefined, user-friendly subreddit commands, for memes, cute animals, etc. with more getting added over time
