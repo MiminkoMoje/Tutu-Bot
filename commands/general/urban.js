@@ -6,7 +6,7 @@ require(`${require.main.path}/events/embeds.js`)();
 
 module.exports = {
   name: 'urban',
-  aliases: ['ud', 'uds', 'urbandictionary', 'urban-dictionary', 'udict', 'udictionary', 'urband', 'urbandict', 'u'],
+  aliases: ['ud', 'uds', 'urbandictionary', 'urban-dictionary', 'udict', 'udictionary', 'urband', 'urbandict'],
   description: 'Shows the Urban Definition of your query.',
 
   //start
