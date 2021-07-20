@@ -227,7 +227,11 @@ module.exports = function () {
   this.redditGetPost = async function (args, message, subreddit, rType, subreddits, time) {
     subreddits = subreddits || 0;
     if (!subreddit) {
-      const errorMsg = `Please provide a subreddit.`
+      if (rType === 'user') {
+        var errorMsg = `Please provide a user.`
+      } else {
+        var errorMsg = `Please provide a subreddit.`
+      }
       return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
     }
 
@@ -282,9 +286,13 @@ module.exports = function () {
         })
       } else {
         post = await r.getRandomSubmission(subreddit);
-        if (Array.isArray(post)) {
+        if (Array.isArray(post) && post.constructor.name === 'Listing') {
+          if (post.length === 0) {
+            return errorNoResults(message, message.author.avatarURL(), message.author.tag)
+          } else if (post.constructor.name === 'Listing') {
           const errorMsg = `This subreddit doesn't support random posts. Please, use the **${prefix}top** command instead.`
           return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+          }
         }
         redditPost(post, args, rType, message, subreddit)
       }
