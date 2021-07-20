@@ -2,7 +2,7 @@
 
 # Tutu Bot
 
-A powerful, Reddit-focused Discord bot.
+A simple, Reddit-focused Discord bot.
 
 Invite it to your server: https://imvasi.com/tutubot
 
@@ -13,6 +13,7 @@ Invite it to your server: https://imvasi.com/tutubot
 - 🔀 Get random posts of any subreddit
 - 🔝 Get top posts, hourly/daily/weekly/monthly/yearly/overall
 - 🆔 Get posts by their ID
+- 👤 Get any user's posts
 - 💨 Easy and fast navigation with reactions
 - 🔞 NSFW protection, such posts are only shown in NSFW channels
 - 😌 Many predefined, user-friendly subreddit commands, for memes, cute animals, etc. with more getting added over time
@@ -34,7 +35,7 @@ https://imvasi.com/tutubot
 ### Install & Host by yourself
 
 There are many reasons why you would want to do that, such as customizing the bot to your likings.
-You must follow these instructuons in order to install it properly:
+You must follow these instructions in order to install it properly:
 
 Clone the repo
 ```
