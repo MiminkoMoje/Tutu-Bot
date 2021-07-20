@@ -53,7 +53,7 @@ module.exports = function () {
 
         botMessage = await message.channel.send({ embed: rNsfw }); //so that the reactions still work on the nsfw error
 
-        if (rType === 'top') {
+        if (rType === 'top' || rType === 'user') {
           return redditTop(botMessage, rListing, args, rType, message, subreddit)
         } else if (rType.includes('random')) {
           return randomPostReaction(botMessage, args, message, subreddit, rType, subreddits)
@@ -170,7 +170,7 @@ module.exports = function () {
         }
       }
 
-      if (rType == 'top') {
+      if (rType == 'top' || rType == 'user') {
         redditTop(botMessage, rListing, args, rType, message, subreddit)
       }
 
@@ -187,15 +187,15 @@ module.exports = function () {
       reactions: {
         '⏩': async () => await Listing.fetchMore({ amount: 1, skipReplies: true, append: false }).then(async Listing => {
           if (Listing.isFinished === true) {
-            const rFinished = {
-              "title": `That's all for now!`,
-              "description": `You saw all the available posts for this subreddit.`,
-              "color": tutuColor,
-              "footer": {
-                "icon_url": message.author.avatarURL(),
-                "text": `${message.author.tag}`,
-              },
-            };
+            var rFinished = new Discord.MessageEmbed()
+              .setTitle(`That's all for now!`)
+              .setColor(tutuColor)
+              .setFooter(`${message.author.tag}`, message.author.avatarURL())
+            if (rType === 'top') {
+              rFinished.setDescription('You saw all the available posts for this subreddit.')
+            } else {
+              rFinished.setDescription('You saw all the available posts from this user.')
+            }
             return message.channel.send({ embed: rFinished });
           }
           post = Listing[0]
@@ -251,6 +251,8 @@ module.exports = function () {
       if (rType === 'reddit' || !rType) {
         if (args[1] === 'id' || args[1] === 'i') {
           rType = 'id'
+        } else if (args[1] === 'user' || args[1] === 'u' || subreddit.startsWith('u/')) {
+          rType = 'user'
         } else if (args[1] === 'top') {
           if (args[2] !== 'hour' && args[2] !== 'day' && args[2] !== 'week' && args[2] !== 'month' && args[2] !== 'year' && args[2] !== 'all') {
             time = 'day';
@@ -266,6 +268,12 @@ module.exports = function () {
       if (rType === 'id') {
         post = await r.getSubmission(subreddit).fetch();
         redditPost(post, args, rType, message, subreddit)
+      } else if (rType === 'user') {
+        await r.getUser(subreddit).getSubmissions({ limit: 1 }).then(async Listing => {
+          post = Listing[0]
+          rListing = Listing
+          redditPost(post, args, rType, message, subreddit)
+        })
       } else if (rType === 'top') {
         await r.getTop(args[0], { time: time, limit: 1 }).then(async Listing => {
           post = Listing[0]
