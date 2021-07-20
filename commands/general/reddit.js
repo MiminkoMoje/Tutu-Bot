@@ -301,7 +301,15 @@ module.exports = function () {
       if (error.statusCode === 503) {
         return error503Reddit(message, message.author.avatarURL(), message.author.tag)
       } else if (error.error.error === 404) {
+        if (error.error.reason === 'banned') {
+          const errorMsg = `This subreddit is banned.`
+          return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag);
+        } else {
         return errorNoResults(message, message.author.avatarURL(), message.author.tag)
+        }
+      } else if (error.error.reason === 'quarantined' && error.error.quarantine_message) {
+        const errorMsg = `This subreddit is quarantined.\n\n${error.error.quarantine_message}`
+        return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag);
       }
        else if (error.error.message) {
         const errorMsg = `Error ${error.error.error}: ${error.error.message} (${error.error.reason})`
