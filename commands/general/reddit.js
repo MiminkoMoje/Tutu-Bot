@@ -308,7 +308,7 @@ module.exports = function () {
         return errorNoResults(message, message.author.avatarURL(), message.author.tag)
         }
       } else if (error.error.reason === 'quarantined' && error.error.quarantine_message) {
-        const errorMsg = `This subreddit is quarantined.\n\n${error.error.quarantine_message}`
+        const errorMsg = `This community is [quarantined](https://www.reddithelp.com/en/categories/reddit-101/rules-reporting/account-and-community-restrictions/quarantined-subreddits).\n\n${error.error.quarantine_message}`
         return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag);
       }
        else if (error.error.message) {
