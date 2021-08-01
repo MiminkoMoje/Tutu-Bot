@@ -39,9 +39,10 @@ module.exports = {
         .setFooter(`Requested by ${message.author.tag} ${tutuEmote} | by Vasilis#1517`, message.author.avatarURL())
         .addFields(
           { name: `${prefix}help`, value: 'This command eliminates racism and brings you good luck for 8.2 years' },
-          { name: `${prefix}reddit [subreddit]`, value: 'Shows a random submission from a subreddit' },
+          { name: `${prefix}random [subreddit]`, value: 'Shows a random submission from a subreddit' },
           { name: `${prefix}top [subreddit] (hour/day/week/month/year/all)`, value: 'Shows the top posts of a subreddit' },
           { name: `${prefix}user [a Reddit user]`, value: 'Shows posts of a Reddit user' },
+          { name: `${prefix}id [a Reddit post ID]`, value: 'Gets a post from its ID' },
           { name: `${prefix}urban [term]`, value: 'Shows the definition of any term using Urban Dictionary 😳' },
           { name: `${prefix}dankmemes`, value: 'Shows a random meme from *r/dankmemes* & *r/memes*' },
           { name: `${prefix}cat`, value: 'Shows a random picture of a meow 🥺' },
