@@ -229,6 +229,8 @@ module.exports = function () {
     if (!subreddit) {
       if (rType === 'user') {
         var errorMsg = `Please provide a user.`
+      } else if (rType === 'id') {
+        var errorMsg = `Please provide a post ID.`
       } else {
         var errorMsg = `Please provide a subreddit.`
       }
@@ -252,23 +254,6 @@ module.exports = function () {
         return redditPost(post, args, rType, message, subreddit, subreddits)
       }
 
-      if (rType === 'reddit' || !rType) {
-        if (args[1] === 'id' || args[1] === 'i') {
-          rType = 'id'
-        } else if (args[1] === 'user' || args[1] === 'u' || subreddit.startsWith('u/')) {
-          rType = 'user'
-        } else if (args[1] === 'top') {
-          if (args[2] !== 'hour' && args[2] !== 'day' && args[2] !== 'week' && args[2] !== 'month' && args[2] !== 'year' && args[2] !== 'all') {
-            time = 'day';
-          } else {
-            time = args[2];
-          }
-          rType = 'top';
-        } else {
-          rType = 'random';
-        }
-      }
-
       if (rType === 'id') {
         post = await r.getSubmission(subreddit).fetch();
         redditPost(post, args, rType, message, subreddit)
@@ -284,7 +269,7 @@ module.exports = function () {
           rListing = Listing
           redditPost(post, args, rType, message, subreddit)
         })
-      } else {
+      } else if (rType === 'random') {
         post = await r.getRandomSubmission(subreddit);
         if (Array.isArray(post) && post.constructor.name === 'Listing') {
           if (post.length === 0) {
