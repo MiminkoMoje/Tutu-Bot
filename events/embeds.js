@@ -9,7 +9,7 @@ module.exports = function () {
         "text": authorTag,
       },
     };
-    message.channel.send({ embed: embed })
+    message.channel.send({ embeds: [embed] })
   };
 
   this.errorNoResults = function (message, avatarURL, authorTag) {
@@ -22,7 +22,7 @@ module.exports = function () {
         "text": authorTag,
       },
     };
-    message.channel.send({ embed: embed })
+    message.channel.send({ embeds: [embed] })
   };
 
   this.error503Reddit = function (message, avatarURL, authorTag) {
@@ -35,7 +35,7 @@ module.exports = function () {
         "text": authorTag,
       },
     };
-    message.channel.send({ embed: embed })
+    message.channel.send({ embeds: [embed] })
   };
 
   this.errorNsfwDisabled = function (message, avatarURL, authorTag) {
@@ -48,6 +48,6 @@ module.exports = function () {
         "text": authorTag,
       },
     };
-    message.channel.send({ embed: embed })
+    message.channel.send({ embeds: [embed] })
   };
 }

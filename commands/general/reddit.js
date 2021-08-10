@@ -1,7 +1,6 @@
 const snoowrap = require('snoowrap');
 const Discord = require('discord.js');
-const { MessageButton } = require("discord-buttons")
-const { ReactionCollector } = require('discord.js-collector')
+const { MessageActionRow, MessageButton } = require('discord.js');
 const { redditCredentials } = require(`${require.main.path}/config.json`);
 require(`${require.main.path}/events/embeds.js`)();
 const { prefix } = require(`${require.main.path}/config.json`);
@@ -51,7 +50,7 @@ module.exports = function () {
           },
         };
 
-        botMessage = await message.channel.send({ embed: rNsfw }); //so that the reactions still work on the nsfw error
+        botMessage = await message.channel.send({ embeds: [rNsfw] }); //so that the reactions still work on the nsfw error
 
         if (rType === 'top' || rType === 'user') {
           return redditTop(botMessage, rListing, args, rType, message, subreddit)
@@ -117,7 +116,7 @@ module.exports = function () {
           if (i === rText.length - 1 && post.hide_score === false) {
             rPost.addField('Score', `👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)`)
           }
-          var botMessage = await message.channel.send(rPost)
+          var botMessage = await message.channel.send({ embeds: [rPost] })
         }
 
         if (rType.includes('random')) {
@@ -156,14 +155,16 @@ module.exports = function () {
           rMessage = rMessage.concat(`\n`)
         }
         rMessage = rMessage.concat(`Requested by ${message.author.tag} ${tutuEmote} | [${post.id}]`)
-
-        let rButton = new MessageButton()
+        const row = new MessageActionRow()
+          .addComponents(
+            new MessageButton()
           .setLabel("Open on Reddit")
-          .setStyle("url")
-          .setEmoji("🟠")
+              .setStyle("LINK")
+              .setEmoji("874699801256681492") //custom emoji (reddit logo)
           .setURL(`https://reddit.com${post.permalink}`)
+          );
 
-        var botMessage = await message.channel.send(rMessage, { buttons: [rButton] });
+        var botMessage = await message.channel.send({ content: rMessage, components: [row] });
 
         if (rType.includes('random')) {
           randomPostReaction(botMessage, args, message, subreddit, rType, subreddits);
@@ -181,11 +182,15 @@ module.exports = function () {
 
   //get top posts
   function redditTop(botMessage, Listing, args, rType, message, subreddit) {
-    ReactionCollector.question({
-      botMessage,
-      user: message.author,
-      reactions: {
-        '⏩': async () => await Listing.fetchMore({ amount: 1, skipReplies: true, append: false }).then(async Listing => {
+    botMessage.react('⏩')
+    const filter = (reaction, user) => {
+      return reaction.emoji.name === '⏩' && user.id === message.author.id;
+    };
+
+    const collector = botMessage.createReactionCollector({ filter, time: 6000000 });
+
+    collector.on('collect', async (reaction, user) => {
+      await Listing.fetchMore({ amount: 1, skipReplies: true, append: false }).then(async Listing => {
           if (Listing.isFinished === true) {
             var rFinished = new Discord.MessageEmbed()
               .setTitle(`That's all for now!`)
@@ -196,30 +201,38 @@ module.exports = function () {
             } else {
               rFinished.setDescription('You saw all the available posts from this user.')
             }
-            return message.channel.send({ embed: rFinished });
+          return message.channel.send({ embeds: [rFinished] });
           }
           post = Listing[0]
           rListing = Listing
           redditPost(post, args, rType, message, subreddit)
-        }),
-      },
-      collectorOptions: {
-        time: 6000000
-      }
+      })
+      botMessage.reactions.cache.get('⏩').remove()
+      collector.stop()
+    });
+
+    collector.on('end', collected => {
+      botMessage.reactions.cache.get('⏩').remove()
     });
   }
 
   //react to random posts
   function randomPostReaction(botMessage, args, message, subreddit, rType, subreddits) {
-    ReactionCollector.question({
-      botMessage,
-      user: message.author,
-      reactions: {
-        '🔄': async () => await redditGetPost(args, message, subreddit, rType, subreddits),
-      },
-      collectorOptions: {
-        time: 6000000
-      }
+    botMessage.react('🔄')
+    const filter = (reaction, user) => {
+      return reaction.emoji.name === '🔄' && user.id === message.author.id;
+    };
+
+    const collector = botMessage.createReactionCollector({ filter, time: 6000000 });
+
+    collector.on('collect', async (reaction, user) => {
+      await redditGetPost(args, message, subreddit, rType, subreddits)
+      botMessage.reactions.cache.get('🔄').remove()
+      collector.stop()
+    })
+
+    collector.on('end', collected => {
+      botMessage.reactions.cache.get('🔄').remove()
     });
   }
 

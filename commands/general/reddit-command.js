@@ -15,6 +15,6 @@ module.exports = {
           { name: `${prefix}user [a Reddit user]`, value: 'Shows posts of a Reddit user' },
           { name: `${prefix}id [a Reddit post ID]`, value: 'Gets a post from its ID' },
         )
-      message.channel.send(helpEmbed);
+      message.channel.send({embeds: [helpEmbed]});
   }
 }

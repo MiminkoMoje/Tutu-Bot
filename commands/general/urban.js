@@ -1,7 +1,6 @@
 const fetch = require('node-fetch');
 const querystring = require('querystring');
 const Discord = require('discord.js');
-const { ReactionCollector } = require('discord.js-collector')
 require(`${require.main.path}/events/embeds.js`)();
 
 module.exports = {
@@ -187,7 +186,7 @@ module.exports = {
 
         y++
 
-        var botMessage = await message.channel.send(resultEmbed);
+        var botMessage = await message.channel.send({ embeds: [resultEmbed] });
         resultEmbed.fields = [];
       }
       reaction(list, args, i, botMessage)
@@ -196,18 +195,22 @@ module.exports = {
     function reaction(list, args, i, botMessage) {
 
       if (i + 1 < list.length) {
-        reactions = {
-          '⏩': async () => await definition(list, args, i + 1),
-        }
-      } else return;
+        botMessage.react('⏩')
+      } else return
+      const filter = (reaction, user) => {
+        return reaction.emoji.name === '⏩' && user.id === message.author.id;
+      };
 
-      ReactionCollector.question({
-        botMessage,
-        user: message.author,
-        reactions,
-        collectorOptions: {
-          time: 6000000
-        }
+      const collector = botMessage.createReactionCollector({ filter, time: 6000000 });
+
+      collector.on('collect', async (reaction, user) => {
+        await definition(list, args, i + 1)
+        botMessage.reactions.cache.get('⏩').remove()
+        collector.stop()
+      })
+
+      collector.on('end', collected => {
+        botMessage.reactions.cache.get('⏩').remove()
       });
     }
   },

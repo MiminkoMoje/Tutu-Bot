@@ -26,7 +26,7 @@ module.exports = {
         )
 
       if (nsfwDisableGuildID.includes(message.guild.id) === false) {
-        message.channel.send(nsfwEmbed);
+        message.channel.send({embeds: [nsfwEmbed]});
       } else {
         return errorNsfwDisabled(message, message.author.avatarURL(), message.author.tag)
       }
@@ -52,7 +52,7 @@ module.exports = {
         helpEmbed.addField(`${prefix}help nsfw`, `Feeling kinda........😏😏 No? Okay sorry`)
       }
 
-      message.channel.send(helpEmbed);
+      message.channel.send({embeds: [helpEmbed]});
     }
   },
 };

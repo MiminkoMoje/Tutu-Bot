@@ -1,12 +1,12 @@
 const fs = require('fs');
-const Discord = require('discord.js');
+const { Client, Intents, Collection } = require('discord.js');
 const { prefix, token, ownerId, nsfwDisableGuildID, bannedUserID } = require('./config.json');
 require(`${require.main.path}/events/embeds.js`)();
 
-const client = new Discord.Client();
-client.commands = new Discord.Collection();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES], partials: ['CHANNEL']});
+client.commands = new Collection();
+
 const commandFolders = fs.readdirSync('./commands');
-require('discord-buttons')(client);
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 
 for (const folder of commandFolders) {
@@ -34,7 +34,7 @@ client.once('ready', () => {
   global.tutuEmote = '🦩'
 });
 
-client.on('message', message => {
+client.on('messageCreate', message => {
 
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
@@ -57,7 +57,7 @@ client.on('message', message => {
       return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
     }
 
-    if (message.channel.type === 'dm') {
+    if (message.channel.type === 'DM') {
       const errorMsg = `You can't use commands here! Use a server.`
       return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
     }
@@ -72,7 +72,7 @@ client.on('message', message => {
     }
 
     if (command.permissions) {
-      if (message.channel.type === 'dm') {
+      if (message.channel.type === 'DM') {
         return errorGuildOnly(message, message.author.avatarURL(), message.author.tag)
       } else {
         const authorPerms = message.channel.permissionsFor(message.author);
