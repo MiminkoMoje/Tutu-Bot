@@ -95,10 +95,15 @@ module.exports = function () {
           rText[i] = subText.slice(4096 * i, (4096 * i) + 4096)
         }
 
+        if (post.title.length > 256) {
+          var rTitle = `${post.title.slice(0, 253)}...`
+          rText[0] = rText[0].replace(/^/, `...${post.title.slice(253, post.title.length)}\n\n---\n\n`)
+        } else { rTitle = post.title }
+
         for (let i = 0; i < rText.length; i++) {
           var rPost = new Discord.MessageEmbed()
             .setColor(tutuColor)
-            .setTitle(post.title)
+            .setTitle(rTitle)
             .setURL(`https://www.reddit.com${post.permalink}`)
             .setFooter(`Requested by ${message.author.tag} ${tutuEmote} | [${post.id}]`, message.author.avatarURL())
             .setDescription(rText[i])
