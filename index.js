@@ -1,9 +1,11 @@
 const fs = require('fs');
 const { Client, Intents, Collection } = require('discord.js');
-const { prefix, token, ownerId, nsfwDisableGuildID, bannedUserID } = require('./config.json');
+const { defPrefix, token, ownerId, nsfwDisableGuildID, bannedUserID } = require('./config.json');
 require(`${require.main.path}/events/embeds.js`)();
+const prefix = require('discord-prefix');
+let defaultPrefix = defPrefix;
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES], partials: ['CHANNEL']});
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES], partials: ['CHANNEL'] });
 client.commands = new Collection();
 
 const commandFolders = fs.readdirSync('./commands');
@@ -28,17 +30,18 @@ for (const file of eventFiles) {
 
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.username}!`)
-  client.user.setActivity(`for ${prefix}help`, { type: 'WATCHING' })
-  global.tutuColor = 260255
+  client.user.setActivity(`for ${defPrefix}help`, { type: 'WATCHING' })
+  global.tutuColor = 7799039
   global.errorColor = 16724787
-  global.tutuEmote = '🦩'
+  global.tutuEmote = '💜'
 });
 
 client.on('messageCreate', message => {
+  let guildPrefix = prefix.getPrefix(message.guild.id);
+  if (!guildPrefix) guildPrefix = defaultPrefix;
+  if (!message.content.startsWith(guildPrefix) || message.author.bot) return;
 
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
-
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const args = message.content.slice(guildPrefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
 
   const command = client.commands.get(commandName) ||
