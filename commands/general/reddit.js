@@ -52,7 +52,7 @@ module.exports = function () {
 
         botMessage = await message.channel.send({ embeds: [rNsfw] }); //so that the reactions still work on the nsfw error
 
-        if (rType === 'top' || rType === 'user') {
+        if (rType === 'top' || rType === 'user' || rType === 'search') {
           return redditTop(botMessage, rListing, args, rType, message, subreddit)
         } else if (rType.includes('random')) {
           return randomPostReaction(botMessage, args, message, subreddit, rType, subreddits)
@@ -176,7 +176,7 @@ module.exports = function () {
         }
       }
 
-      if (rType == 'top' || rType == 'user') {
+      if (rType == 'top' || rType == 'user' || rType === 'search') {
         redditTop(botMessage, rListing, args, rType, message, subreddit)
       }
 
@@ -203,8 +203,10 @@ module.exports = function () {
               .setFooter(`${message.author.tag}`, message.author.avatarURL())
             if (rType === 'top') {
               rFinished.setDescription('You saw all the available posts for this subreddit.')
-            } else {
+          } else if (rType === 'user') {
               rFinished.setDescription('You saw all the available posts from this user.')
+          } else {
+            rFinished.setDescription(`You've reached the end of the search results.`)
             }
           return message.channel.send({ embeds: [rFinished] });
           }
@@ -242,7 +244,7 @@ module.exports = function () {
   }
 
   //get reddit post
-  this.redditGetPost = async function (args, message, subreddit, rType, subreddits, time) {
+  this.redditGetPost = async function (args, message, subreddit, rType, subreddits, time, query, sort) {
     subreddits = subreddits || 0;
     if (!subreddit) {
       if (rType === 'user') {
@@ -271,7 +273,16 @@ module.exports = function () {
         post = await r.getRandomSubmission(subreddit);
         return redditPost(post, args, rType, message, subreddit, subreddits)
       }
-
+      if (rType === 'search') {
+        await r.search({ query: query, time: time, subreddit: subreddit, limit: 1, sort: sort }).then(async Listing => {
+          if (Listing.length < 1) {
+            return errorNoResults(message, message.author.avatarURL(), message.author.tag)
+          }
+          post = Listing[0]
+          rListing = Listing
+          redditPost(post, args, rType, message, subreddit)
+        })
+      }
       if (rType === 'id') {
         post = await r.getSubmission(subreddit).fetch();
         redditPost(post, args, rType, message, subreddit)
@@ -293,7 +304,7 @@ module.exports = function () {
           if (post.length === 0) {
             return errorNoResults(message, message.author.avatarURL(), message.author.tag)
           } else if (post.constructor.name === 'Listing') {
-          const errorMsg = `This subreddit doesn't support random posts. Please, use the **${prefix}top** command instead.`
+            const errorMsg = `This subreddit doesn't support random posts. Please, use the **top** command instead.`
           return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
           }
         }
