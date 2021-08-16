@@ -1,19 +1,17 @@
 {
-	"token": "Your Token",
-	"ownerId": "Your User ID",
-	"redditCredentials": {
-		"username": "Reddit Username",
-		"password": "Reddit Password",
-		"app_id": "Reddit App ID",
-		"api_secret": "Reddit Secret Hash"
-	},
-	
-	"prefix": ",",
-	
-	"nsfwDisableGuildID": [
-		"Guild IDs that you want the NSFW commands disabled for."
-	],
-	"bannedUserID": [
-		"User IDs that you want to forbid from using the bot."
-	]
+  "token": "Your Token",
+  "ownerId": "Your User ID",
+  "redditCredentials": {
+    "username": "Reddit Username",
+    "password": "Reddit Password",
+    "app_id": "Reddit App ID",
+    "api_secret": "Reddit Secret Hash"
+  },
+  "defPrefix": ",",
+  "nsfwDisableGuildID": [
+    "Guild IDs that you want the NSFW commands disabled for."
+  ],
+  "bannedUserID": [
+    "User IDs that you want to forbid from using the bot."
+  ]
 }

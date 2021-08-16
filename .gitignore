@@ -85,3 +85,4 @@ typings/
 events/message.js
 commands/vasilis/
 events/tutu/
+prefixes.db
