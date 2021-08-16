@@ -12,6 +12,19 @@ module.exports = function () {
     message.channel.send({ embeds: [embed] })
   };
 
+  this.msgEmbed = function (message, embedTitle, embedMsg) {
+    const embed = {
+      "title": embedTitle,
+      "description": embedMsg,
+      "color": tutuColor,
+      "footer": {
+        "icon_url": message.author.avatarURL(),
+        "text": message.author.tag,
+      },
+    };
+    message.channel.send({ embeds: [embed] })
+  };
+
   this.errorNoResults = function (message, avatarURL, authorTag) {
     const embed = {
       "title": `Error`,
