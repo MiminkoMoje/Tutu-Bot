@@ -243,6 +243,57 @@ module.exports = function () {
     });
   }
 
+  async function redditIntro(message, subreddit, rType, subreddits, time, query, sort) {
+    if (rType.includes('random-predefined')) {
+      const embedTitle = 'Reddit'
+      const embedMsg = `Getting random posts from **r/${subreddits.join(', r/')}**...`
+      msgEmbed(message, embedTitle, embedMsg)
+    }
+    if (rType === 'search') {
+      if (time === 'all') {
+        var timespanTxt = 'any time'
+      } else {
+        var timespanTxt = 'this ' + time
+      }
+      if (subreddit === 'all') {
+        var subredditTxt = 'all Reddit'
+      } else {
+        var subredditTxt = subreddit
+      }
+      if (query.length > 100) {
+        var queryTxt = query.slice(0, 100) + '...'
+      } else { var queryTxt = query }
+      const embedTitle = 'Reddit'
+      const embedMsg = `Searching for **${queryTxt}** in **${subredditTxt} posts** of **${timespanTxt}**, and sorting by **${sort}**...`
+      msgEmbed(message, embedTitle, embedMsg)
+    }
+    if (rType === 'id') {
+      const embedTitle = 'Reddit'
+      const embedMsg = `Getting the Reddit post with ID **${subreddit}**...`
+      msgEmbed(message, embedTitle, embedMsg)
+    }
+    if (rType === 'user') {
+      const embedTitle = 'Reddit'
+      const embedMsg = `Getting the posts of user **${subreddit}**...`
+      msgEmbed(message, embedTitle, embedMsg)
+    }
+    if (rType === 'top') {
+      if (time === 'all') {
+        var timespanTxt = 'any time'
+      } else {
+        var timespanTxt = 'this ' + time
+      }
+      const embedTitle = 'Reddit'
+      const embedMsg = `Getting the top posts of **${timespanTxt}** from **${subreddit}**...`
+      msgEmbed(message, embedTitle, embedMsg)
+    }
+    if (rType === 'random') {
+      const embedTitle = 'Reddit'
+      const embedMsg = `Getting random posts from **${subreddits}**...`
+      msgEmbed(message, embedTitle, embedMsg)
+    }
+  }
+
   //get reddit post
   this.redditGetPost = async function (args, message, subreddit, rType, subreddits, time, query, sort) {
     subreddits = subreddits || 0;
@@ -269,6 +320,12 @@ module.exports = function () {
         subreddit = subreddits[subNum]
       }
 
+      if (subreddit.length > 21) {
+        subreddit = subreddit.slice(0, 21)
+      }
+
+      redditIntro(message, subreddit, rType, subreddits, time, query, sort)
+      
       if (rType.includes('random-predefined')) {
         post = await r.getRandomSubmission(subreddit);
         redditPost(post, args, rType, message, subreddit, subreddits)
