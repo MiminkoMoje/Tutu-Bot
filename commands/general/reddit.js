@@ -271,7 +271,7 @@ module.exports = function () {
 
       if (rType.includes('random-predefined')) {
         post = await r.getRandomSubmission(subreddit);
-        return redditPost(post, args, rType, message, subreddit, subreddits)
+        redditPost(post, args, rType, message, subreddit, subreddits)
       }
       if (rType === 'search') {
         await r.search({ query: query, time: time, subreddit: subreddit, limit: 1, sort: sort }).then(async Listing => {
@@ -286,19 +286,22 @@ module.exports = function () {
       if (rType === 'id') {
         post = await r.getSubmission(subreddit).fetch();
         redditPost(post, args, rType, message, subreddit)
-      } else if (rType === 'user') {
+      }
+      if (rType === 'user') {
         await r.getUser(subreddit).getSubmissions({ limit: 1 }).then(async Listing => {
           post = Listing[0]
           rListing = Listing
           redditPost(post, args, rType, message, subreddit)
         })
-      } else if (rType === 'top') {
+      }
+      if (rType === 'top') {
         await r.getTop(args[0], { time: time, limit: 1 }).then(async Listing => {
           post = Listing[0]
           rListing = Listing
           redditPost(post, args, rType, message, subreddit)
         })
-      } else if (rType === 'random') {
+      }
+      if (rType === 'random') {
         post = await r.getRandomSubmission(subreddit);
         if (Array.isArray(post) && post.constructor.name === 'Listing') {
           if (post.length === 0) {
@@ -311,6 +314,7 @@ module.exports = function () {
         redditPost(post, args, rType, message, subreddit)
       }
 
+      //what a mess...
     } catch (error) {
       if (error.statusCode === 503) {
         return error503Reddit(message, message.author.avatarURL(), message.author.tag)
