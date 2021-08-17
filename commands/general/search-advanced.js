@@ -8,7 +8,7 @@ module.exports = {
       var subreddit = args[0]
     } else {
       const embedTitle = `Advanced Search`
-      const embedMsg = `With advanced search, you can select the timespan that posts should be retrieved from, and the sorting option that determines how the results should be sorted.\n\nSyntax: **asearch [subreddit] [timespan] [sort] [query]**.\n\nAvailable timespans are: **hour, day, week, month, year, all**.\nAvailable sorting options are: **relevance, hot, top, new, comments**.\n\nThe normal **search** command searches all posts and sorts them as relevance.`
+      const embedMsg = `With advanced search, you can select the timespan that posts should be retrieved from, and the sorting option that determines how the results should be sorted.\n\nSyntax: **asearch [subreddit] [timespan] [sort] [query]**.\n\nAvailable timespans are: **hour, day, week, month, year, all**.\nAvailable sorting options are: **relevance, hot, top, new, comments**.\n\nThe normal **search** command searches all posts and sorts them by relevance.`
       return msgEmbed(message, embedTitle, embedMsg)
     }
     
