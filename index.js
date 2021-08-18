@@ -37,7 +37,11 @@ client.once('ready', () => {
 });
 
 client.on('messageCreate', message => {
-  let guildPrefix = prefix.getPrefix(message.guild.id);
+  if (message.channel.type === 'DM') {
+    var guildPrefix = defaultPrefix;
+  } else {
+    var guildPrefix = prefix.getPrefix(message.guild.id);
+  }
   if (!guildPrefix) guildPrefix = defaultPrefix;
   if (!message.content.startsWith(guildPrefix) || message.author.bot) return;
 
