@@ -87,6 +87,12 @@ module.exports = function () {
         if (rType === 'random-predefined-image') {
           return redditGetPost(args, message, subreddit, rType, subreddits)
         }
+
+        if (post.title.length > 256) {
+          var rTitle = `${post.title.slice(0, 253)}...`
+          subText = subText.replace(/^/, `...${post.title.slice(253, post.title.length)}\n\n---\n\n`)
+        } else { rTitle = post.title }
+
         var rText = []
         var size = subText.length / 4096;
         const subIcon = await r.getSubreddit(post.subreddit.display_name).community_icon
@@ -94,11 +100,6 @@ module.exports = function () {
         for (let i = 0; i < size; i++) {
           rText[i] = subText.slice(4096 * i, (4096 * i) + 4096)
         }
-
-        if (post.title.length > 256) {
-          var rTitle = `${post.title.slice(0, 253)}...`
-          rText[0] = rText[0].replace(/^/, `...${post.title.slice(253, post.title.length)}\n\n---\n\n`)
-        } else { rTitle = post.title }
 
         for (let i = 0; i < rText.length; i++) {
           var rPost = new Discord.MessageEmbed()
