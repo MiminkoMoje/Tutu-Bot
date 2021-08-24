@@ -16,21 +16,6 @@ module.exports = function () {
   });
   r.config({ warnings: false, maxRetryAttempts: 2 });
 
-  //format unix timestamp
-  function timeConverter(UNIX_timestamp) {
-    var a = new Date(UNIX_timestamp * 1000);
-    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    var year = a.getFullYear();
-    var month = months[a.getMonth()];
-    var date = a.getDate();
-    var hour = a.getHours();
-    var min = a.getMinutes();
-    min = ('0' + min).slice(-2)
-    //var sec = a.getSeconds();
-    var time = `${month} ${date}, ${year} ${hour}:${min}`
-    return time;
-  }
-
   //format and send post
   async function redditPost(post, args, rType, message, subreddit, subreddits) {
     try {
@@ -115,7 +100,8 @@ module.exports = function () {
             rAuthor = rAuthor.concat(` 🔀 Crossposted`)
           }
 
-          rAuthor = rAuthor.concat(` by u/${post.author.name} • ${timeConverter(post.created_utc)}`)
+          rAuthor = rAuthor.concat(` by u/${post.author.name}`)
+          rPost.setTimestamp(Math.floor(post.created * 1000))
 
           rPost.setAuthor(rAuthor, subIcon)
 
@@ -140,7 +126,7 @@ module.exports = function () {
             rMessage = rMessage.concat(` 🔀 Crossposted`)
           }
 
-          rMessage = rMessage.concat(` by u/${post.author.name} • ${timeConverter(post.created_utc)}\n`)
+          rMessage = rMessage.concat(` by u/${post.author.name} • <t:${post.created}:R>\n`)
 
           if (post.hide_score === false) {
             rMessage = rMessage.concat(`👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)\n`)
