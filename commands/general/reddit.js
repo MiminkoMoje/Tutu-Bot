@@ -60,8 +60,14 @@ module.exports = function () {
         var hasUrl = true
       }
 
-      if (post.is_gallery === true) {
+      if (post.is_gallery === true) { //if post is gallery
         var validPosts = Object.values(post.media_metadata).filter((image) => image.status === 'valid');
+        var galleryIds = []
+        for (x = 0; x < validPosts.length; x++) {
+          galleryIds[x] = `https://i.redd.it/${validPosts[x].id}.${validPosts[x].m.split('/').pop()}`
+        }
+      } else if (post.crosspost_parent_list[0].is_gallery === true) { //if crosspost is gallery
+        var validPosts = Object.values(post.crosspost_parent_list[0].media_metadata).filter((image) => image.status === 'valid');
         var galleryIds = []
         for (x = 0; x < validPosts.length; x++) {
           galleryIds[x] = `https://i.redd.it/${validPosts[x].id}.${validPosts[x].m.split('/').pop()}`
@@ -134,7 +140,7 @@ module.exports = function () {
         }
         rMessage = rMessage.concat(`\n**${post.title}**\n`)
 
-        if (post.is_gallery === true) {
+        if (post.is_gallery === true || post.crosspost_parent_list[0].is_gallery === true) {
           for (x = 0; x < galleryIds.length; x++) {
             rMessage = rMessage.concat(`${galleryIds[x]}\n`)
           }
