@@ -14,10 +14,115 @@ module.exports = function () {
     username: redditCredentials.username,
     password: redditCredentials.password
   });
-  r.config({ warnings: false, maxRetryAttempts: 2 });
+  //get reddit post
+  this.redditGetPost = async function (args, message, subreddit, rType, subreddits, time, query, sort) {
+    subreddits = subreddits || 0;
+    if (!subreddit) {
+      if (rType === 'user') {
+        var errorMsg = `Please provide a user.`
+      } else if (rType === 'id') {
+        var errorMsg = `Please provide a post ID.`
+      } else {
+        var errorMsg = `Please provide a subreddit.`
+      }
+      return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+    }
+
+    var post;
+
+    try {
+      if (subreddits === 0) {
+        var subreddits = subreddit
+      }
+
+      if (Array.isArray(subreddits)) {
+        const subNum = Math.random() * subreddits.length | 0;
+        subreddit = subreddits[subNum]
+      }
+
+      if (subreddit.length > 21) {
+        subreddit = subreddit.slice(0, 21)
+      }
+
+      if (!args == 0) {
+        redditIntro(message, subreddit, rType, subreddits, time, query, sort)
+      }
+
+      if (rType.includes('random-predefined')) {
+        post = await r.getRandomSubmission(subreddit, { skipReplies: true });
+        redditPost(post, args, rType, message, subreddit, subreddits)
+      }
+      if (rType === 'search') {
+        await r.search({ query: query, time: time, subreddit: subreddit, limit: 1, sort: sort, skipReplies: true }).then(async Listing => {
+          if (Listing.length < 1) {
+            return errorNoResults(message, message.author.avatarURL(), message.author.tag)
+          }
+          post = Listing[0]
+          rListing = Listing
+          redditPost(post, args, rType, message, subreddit)
+        })
+      }
+      if (rType === 'id') {
+        post = await r.getSubmission(subreddit, { skipReplies: true }).fetch();
+        redditPost(post, args, rType, message, subreddit)
+      }
+      if (rType === 'user') {
+        await r.getUser(subreddit).getSubmissions({ limit: 1, skipReplies: true }).then(async Listing => {
+          post = Listing[0]
+          rListing = Listing
+          redditPost(post, args, rType, message, subreddit)
+        })
+      }
+      if (rType === 'top') {
+        await r.getTop(args[0], { time: time, limit: 1, skipReplies: true }).then(async Listing => {
+          post = Listing[0]
+          rListing = Listing
+          redditPost(post, args, rType, message, subreddit)
+        })
+      }
+      if (rType === 'random') {
+        post = await r.getRandomSubmission(subreddit, { skipReplies: true });
+        if (Array.isArray(post) && post.constructor.name === 'Listing') {
+          if (post.length === 0) {
+            return errorNoResults(message, message.author.avatarURL(), message.author.tag)
+          } else if (post.constructor.name === 'Listing') {
+            const errorMsg = `This subreddit doesn't support random posts. Please, use the **top** command instead.`
+            return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+          }
+        }
+        redditPost(post, args, rType, message, subreddit)
+      }
+
+      //what a mess...
+    } catch (error) {
+      if (error.statusCode === 503) {
+        return error503Reddit(message, message.author.avatarURL(), message.author.tag)
+      } else if (error.error.error === 404) {
+        if (error.error.reason === 'banned') {
+          const errorMsg = `This subreddit is banned.`
+          return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag);
+        } else {
+          return errorNoResults(message, message.author.avatarURL(), message.author.tag)
+        }
+      } else if (error.error.reason === 'quarantined' && error.error.quarantine_message) {
+        const errorMsg = `This community is [quarantined](https://www.reddithelp.com/en/categories/reddit-101/rules-reporting/account-and-community-restrictions/quarantined-subreddits).\n\n${error.error.quarantine_message}`
+        return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag);
+      }
+      else if (error.error.message) {
+        const errorMsg = `Error ${error.error.error}: ${error.error.message} (${error.error.reason})`
+        return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+      }
+      else {
+        console.log(error)
+        return errorNoResults(message, message.author.avatarURL(), message.author.tag)
+      }
+    }
+  }
 
   //format and send post
   async function redditPost(post, args, rType, message, subreddit, subreddits) {
+    args = 0 //so it doesn't show the intro again
+
     try {
       if (post.removed_by_category === 'deleted') {  //check if post is deleted
         const errorMsg = `[This](${post.url}) post has been deleted.`
@@ -44,19 +149,19 @@ module.exports = function () {
         } else return;
       }
 
-      if (post.selftext !== '' || post.crosspost_parent_list) {
-        if (post.crosspost_parent_list) {
-          if (post.crosspost_parent_list[0].selftext !== '') {
+      getPostId(post, message) //logging
+
+      if (post.selftext !== '') { //if post has text
+        var subText = post.selftext
+        var hasTxt = true
+      } else if (post.crosspost_parent_list) { //if post is crosspost
+        if (post.crosspost_parent_list[0].selftext !== '') { //if crosspost has text
             var subText = post.crosspost_parent_list[0].selftext
             var hasTxt = true
           }
-        } else {
-          var subText = post.selftext
-          var hasTxt = true
-        }
       }
 
-      if (post.url !== '') {
+      if (post.url !== '') { //if post has url
         var hasUrl = true
       }
 
@@ -285,108 +390,6 @@ module.exports = function () {
       const embedTitle = 'Reddit'
       const embedMsg = `Getting random posts from **${subreddits}**...`
       msgEmbed(message, embedTitle, embedMsg)
-    }
-  }
-
-  //get reddit post
-  this.redditGetPost = async function (args, message, subreddit, rType, subreddits, time, query, sort) {
-    subreddits = subreddits || 0;
-    if (!subreddit) {
-      if (rType === 'user') {
-        var errorMsg = `Please provide a user.`
-      } else if (rType === 'id') {
-        var errorMsg = `Please provide a post ID.`
-      } else {
-        var errorMsg = `Please provide a subreddit.`
-      }
-      return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
-    }
-
-    var post;
-
-    try {
-      if (subreddits === 0) {
-        var subreddits = subreddit
-      }
-
-      if (Array.isArray(subreddits)) {
-        const subNum = Math.random() * subreddits.length | 0;
-        subreddit = subreddits[subNum]
-      }
-
-      if (subreddit.length > 21) {
-        subreddit = subreddit.slice(0, 21)
-      }
-
-      redditIntro(message, subreddit, rType, subreddits, time, query, sort)
-      
-      if (rType.includes('random-predefined')) {
-        post = await r.getRandomSubmission(subreddit);
-        redditPost(post, args, rType, message, subreddit, subreddits)
-      }
-      if (rType === 'search') {
-        await r.search({ query: query, time: time, subreddit: subreddit, limit: 1, sort: sort }).then(async Listing => {
-          if (Listing.length < 1) {
-            return errorNoResults(message, message.author.avatarURL(), message.author.tag)
-          }
-          post = Listing[0]
-          rListing = Listing
-          redditPost(post, args, rType, message, subreddit)
-        })
-      }
-      if (rType === 'id') {
-        post = await r.getSubmission(subreddit).fetch();
-        redditPost(post, args, rType, message, subreddit)
-      }
-      if (rType === 'user') {
-        await r.getUser(subreddit).getSubmissions({ limit: 1 }).then(async Listing => {
-          post = Listing[0]
-          rListing = Listing
-          redditPost(post, args, rType, message, subreddit)
-        })
-      }
-      if (rType === 'top') {
-        await r.getTop(args[0], { time: time, limit: 1 }).then(async Listing => {
-          post = Listing[0]
-          rListing = Listing
-          redditPost(post, args, rType, message, subreddit)
-        })
-      }
-      if (rType === 'random') {
-        post = await r.getRandomSubmission(subreddit);
-        if (Array.isArray(post) && post.constructor.name === 'Listing') {
-          if (post.length === 0) {
-            return errorNoResults(message, message.author.avatarURL(), message.author.tag)
-          } else if (post.constructor.name === 'Listing') {
-            const errorMsg = `This subreddit doesn't support random posts. Please, use the **top** command instead.`
-          return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
-          }
-        }
-        redditPost(post, args, rType, message, subreddit)
-      }
-
-      //what a mess...
-    } catch (error) {
-      if (error.statusCode === 503) {
-        return error503Reddit(message, message.author.avatarURL(), message.author.tag)
-      } else if (error.error.error === 404) {
-        if (error.error.reason === 'banned') {
-          const errorMsg = `This subreddit is banned.`
-          return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag);
-        } else {
-        return errorNoResults(message, message.author.avatarURL(), message.author.tag)
-        }
-      } else if (error.error.reason === 'quarantined' && error.error.quarantine_message) {
-        const errorMsg = `This community is [quarantined](https://www.reddithelp.com/en/categories/reddit-101/rules-reporting/account-and-community-restrictions/quarantined-subreddits).\n\n${error.error.quarantine_message}`
-        return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag);
-      }
-       else if (error.error.message) {
-        const errorMsg = `Error ${error.error.error}: ${error.error.message} (${error.error.reason})`
-        return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
-      }
-      else {
-        return errorNoResults(message, message.author.avatarURL(), message.author.tag)
-      }
     }
   }
 }
