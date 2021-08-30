@@ -8,9 +8,6 @@
     "api_secret": "Reddit Secret Hash"
   },
   "defPrefix": ",",
-  "nsfwDisableGuildID": [
-    "Guild IDs that you want the NSFW commands disabled for."
-  ],
   "bannedUserID": [
     "User IDs that you want to forbid from using the bot."
   ]

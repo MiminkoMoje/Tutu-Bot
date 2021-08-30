@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { Client, Intents, Collection } = require('discord.js');
-const { defPrefix, token, ownerId, nsfwDisableGuildID, bannedUserID } = require('./config.json');
+const { defPrefix, token, ownerId, bannedUserID } = require('./config.json');
 require(`${require.main.path}/events/embeds.js`)();
 require(`${require.main.path}/commands/general/reddit.js`)();
 const prefix = require('discord-prefix');
@@ -68,10 +68,6 @@ client.on('messageCreate', message => {
     if (message.channel.type === 'DM') {
       const errorMsg = `You can't use commands here! Use a server.`
       return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
-    }
-
-    if (command.nsfwCommand && nsfwDisableGuildID.includes(message.guild.id)) {
-      return errorNsfwDisabled(message, message.author.avatarURL(), message.author.tag)
     }
 
     if (command.nsfwCommand && !message.channel.nsfw) {
