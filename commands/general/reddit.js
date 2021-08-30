@@ -197,7 +197,25 @@ module.exports = function () {
             .setFooter(`Requested by ${message.author.tag} ${tutuEmote} | [${post.id}]`, message.author.avatarURL())
             .setDescription(rText[i])
 
-          rAuthor = `${post.subreddit_name_prefixed} •`
+          var rAuthor = ''
+
+          if (post.pinned === true) {
+            rAuthor = rAuthor.concat(`📌 `)
+          }
+
+          if (post.over_18 === true) {
+            rAuthor = rAuthor.concat(`🔞 `)
+          }
+
+          if (post.archived === true) {
+            rAuthor = rAuthor.concat(`🗃️ `)
+          }
+
+          if (post.locked === true) {
+            rAuthor = rAuthor.concat(`🔒 `)
+          }
+
+          rAuthor = rAuthor.concat(`${post.subreddit_name_prefixed} •`)
 
           if (post.crosspost_parent_list) {
             rAuthor = rAuthor.concat(` 🔀 Crossposted`)
@@ -208,8 +226,13 @@ module.exports = function () {
 
           rPost.setAuthor(rAuthor, subIcon)
 
-          if (i === rText.length - 1 && post.hide_score === false) {
-            rPost.addField('Score', `👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)`)
+          var rInfo = ''
+          if (post.hide_score === false) {
+            rInfo = rInfo.concat(`👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)\n`)
+          }
+          rInfo = rInfo.concat(`💬 ${post.num_comments}`)
+          if (i === rText.length - 1) {
+            rPost.addField('Stats', rInfo)
           }
           var botMessage = await message.channel.send({ embeds: [rPost] })
         }
@@ -220,7 +243,25 @@ module.exports = function () {
       }
 
       if (hasUrl === true && hasTxt !== true) {
-        rMessage = `${post.subreddit_name_prefixed}`
+        var rMessage = ''
+
+        if (post.pinned === true) {
+          rMessage = rMessage.concat(`📌 `)
+        }
+
+        if (post.over_18 === true) {
+          rMessage = rMessage.concat(`🔞 `)
+        }
+
+        if (post.archived === true) {
+          rMessage = rMessage.concat(`🗃️ `)
+        }
+
+        if (post.locked === true) {
+          rMessage = rMessage.concat(`🔒 `)
+        }
+
+        rMessage = rMessage.concat(`${post.subreddit_name_prefixed}`)
 
         rMessage = rMessage.concat(` •`)
 
@@ -231,8 +272,10 @@ module.exports = function () {
         rMessage = rMessage.concat(` by u/${post.author.name} • <t:${post.created}:R>\n`)
 
         if (post.hide_score === false) {
-          rMessage = rMessage.concat(`👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)\n`)
+          rMessage = rMessage.concat(`👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted) • `)
         }
+
+        rMessage = rMessage.concat(`💬 ${post.num_comments}\n`)
 
         rMessage = rMessage.concat(`\n**${post.title}**\n`)
 
