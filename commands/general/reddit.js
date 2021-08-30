@@ -238,7 +238,7 @@ module.exports = function () {
         }
 
         if (rType === 'random') {
-          randomPostReaction(botMessage, args, message, subreddit, rType, subreddits);
+          randomPostReaction(botMessage, args, message, subreddit, rType);
         }
       }
 
