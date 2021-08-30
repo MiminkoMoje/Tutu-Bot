@@ -19,7 +19,7 @@ module.exports = function () {
       "color": tutuColor,
       "footer": {
         "icon_url": message.author.avatarURL(),
-        "text": message.author.tag,
+        "text": `Requested by ${message.author.tag}`,
       },
     };
     message.channel.send({ embeds: [embed] })
@@ -42,19 +42,6 @@ module.exports = function () {
     const embed = {
       "title": `Error 503`,
       "description": `Reddit servers are unavailable right now, please try again.`,
-      "color": errorColor,
-      "footer": {
-        "icon_url": avatarURL,
-        "text": authorTag,
-      },
-    };
-    message.channel.send({ embeds: [embed] })
-  };
-
-  this.errorNsfwDisabled = function (message, avatarURL, authorTag) {
-    const embed = {
-      "title": `Error`,
-      "description": `The NSFW commands are disabled for this server.`,
       "color": errorColor,
       "footer": {
         "icon_url": avatarURL,
