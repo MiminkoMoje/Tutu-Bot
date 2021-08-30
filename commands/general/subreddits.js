@@ -5,6 +5,7 @@ require(`${require.main.path}/events/embeds.js`)();
 
 module.exports = {
   name: 'subreddits',
+  aliases: ['subreddit', 'sub', 'subs'],
   async execute(message) {
 
     const r = new snoowrap({
