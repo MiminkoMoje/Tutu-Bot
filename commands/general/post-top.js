@@ -22,6 +22,6 @@ module.exports = {
       }
     }
     var rType = 'top'
-    redditGetPost(args, message, subreddit, rType, subreddits = 0, time)
+    redditGetPost(args, message, subreddit, rType, time)
   },
 };

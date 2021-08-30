@@ -20,7 +20,7 @@ module.exports = {
     var query = args.join(' ').substring(1)
     var rType = 'search'
 
-    redditGetPost(args, message, subreddit, rType, subreddits = 0, time = 'all', query, sort = 'relevance')
+    redditGetPost(args, message, subreddit, rType, time = 'all', query, sort = 'relevance')
 
   },
 };
