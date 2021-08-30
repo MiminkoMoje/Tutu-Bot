@@ -2,6 +2,7 @@ const fs = require('fs');
 const { Client, Intents, Collection } = require('discord.js');
 const { defPrefix, token, ownerId, nsfwDisableGuildID, bannedUserID } = require('./config.json');
 require(`${require.main.path}/events/embeds.js`)();
+require(`${require.main.path}/commands/general/reddit.js`)();
 const prefix = require('discord-prefix');
 let defaultPrefix = defPrefix;
 
