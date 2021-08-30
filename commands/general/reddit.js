@@ -408,13 +408,23 @@ module.exports = function () {
       } else {
         var timespanTxt = 'this ' + time
       }
+      if (subreddit === 'all') {
+        var subredditTxt = 'all Reddit posts'
+      } else {
+        var subredditTxt = subreddit
+      }
       const embedTitle = 'Reddit'
-      const embedMsg = `Getting the top posts of **${timespanTxt}** from **${subreddit}**...`
+      const embedMsg = `Getting the top posts of **${timespanTxt}** from **${subredditTxt}**...`
       msgEmbed(message, embedTitle, embedMsg)
     }
     if (rType === 'random') {
+      if (subreddit === 'all') {
+        var subredditTxt = 'all Reddit posts'
+      } else {
+        var subredditTxt = subreddit
+      }
       const embedTitle = 'Reddit'
-      const embedMsg = `Getting random posts from **${subreddit}**...`
+      const embedMsg = `Getting random posts from **${subredditTxt}**...`
       msgEmbed(message, embedTitle, embedMsg)
     }
   }
