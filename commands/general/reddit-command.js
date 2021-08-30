@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 module.exports = {
   name: 'reddit',
-  aliases: ['sub', 'submission', 'subreddit'],
   description: 'Shows the available Reddit commands.',
   async execute(message) {
     var helpEmbed = new Discord.MessageEmbed()
@@ -14,7 +13,8 @@ module.exports = {
           { name: `user [a Reddit user]`, value: 'Shows posts of a Reddit user' },
           { name: `id [a Reddit post ID]`, value: 'Gets a post from its ID' },
           { name: `search [subreddit] [query]`, value: 'Conducts a search on the defined subreddit' },
-          { name: `asearch`, value: 'Stands for advanced search. Allows you to select the timespan and sorting of the search results. Execute the command for more info.' }
+          { name: `asearch`, value: 'Stands for advanced search. Allows you to select the timespan and sorting of the search results. Execute the command for more info' },
+          { name: `subreddits`, value: 'Shows the most popular subreddits, based on recent activity' },
         )
       message.channel.send({embeds: [helpEmbed]});
   }
