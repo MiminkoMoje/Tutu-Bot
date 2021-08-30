@@ -113,6 +113,12 @@ module.exports = function () {
     //console.log(post)
     args = 0 //so it doesn't show the intro again
 
+    if (typeof rListing !== 'undefined') {
+      if (rListing.length === 0) {
+        return errorNoResults(message, message.author.avatarURL(), message.author.tag)
+      }
+    }
+    
     try {
       if (post.removed_by_category === 'deleted') {  //check if post is deleted
         const errorMsg = `[This](${post.url}) post has been deleted.`
