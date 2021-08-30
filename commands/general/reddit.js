@@ -17,8 +17,7 @@ module.exports = function () {
   r.config({ warnings: true, maxRetryAttempts: 2 });
 
   //get reddit post
-  this.redditGetPost = async function (args, message, subreddit, rType, subreddits, time, query, sort) {
-    subreddits = subreddits || 0;
+  this.redditGetPost = async function (args, message, subreddit, rType, time, query, sort) {
     if (!subreddit) {
       if (rType === 'user') {
         var errorMsg = `Please provide a user.`
@@ -33,34 +32,15 @@ module.exports = function () {
     var post;
 
     try {
-      if (subreddits === 0) {
-        var subreddits = subreddit
-      }
-
-      if (Array.isArray(subreddits)) {
-        const subNum = Math.random() * subreddits.length | 0;
-        subreddit = subreddits[subNum]
-      }
 
       if (subreddit.length > 21) {
         subreddit = subreddit.slice(0, 21)
       }
 
       if (!args == 0) {
-        redditIntro(message, subreddit, rType, subreddits, time, query, sort)
+        redditIntro(message, subreddit, rType, time, query, sort)
       }
 
-      if (rType.includes('random-predefined')) {
-        post = await r.getRandomSubmission(subreddit, { skipReplies: true });
-        redditPost(post, args, rType, message, subreddit, subreddits)
-      }
-      if (rType.includes('top-predefined')) {
-        await r.getTop(subreddit, { time: time, limit: 1, skipReplies: true }).then(async Listing => {
-          post = Listing[0]
-          rListing = Listing
-          redditPost(post, args, rType, message, subreddit)
-        })
-      }
       if (rType === 'search') {
         await r.search({ query: query, time: time, subreddit: subreddit, limit: 1, sort: sort, skipReplies: true }).then(async Listing => {
           if (Listing.length < 1) {
@@ -129,7 +109,7 @@ module.exports = function () {
   }
 
   //format and send post
-  async function redditPost(post, args, rType, message, subreddit, subreddits) {
+  async function redditPost(post, args, rType, message, subreddit) {
     //console.log(post)
     args = 0 //so it doesn't show the intro again
 
@@ -152,10 +132,10 @@ module.exports = function () {
 
         botMessage = await message.channel.send({ embeds: [rNsfw] }); //so that the reactions still work on the nsfw error
 
-        if (rType.includes('top') || rType === 'user' || rType === 'search') {
+        if (rType === 'top' || rType === 'user' || rType === 'search') {
           return redditTop(botMessage, rListing, args, rType, message, subreddit)
-        } else if (rType.includes('random')) {
-          return randomPostReaction(botMessage, args, message, subreddit, rType, subreddits)
+        } else if (rType === 'random') {
+          return randomPostReaction(botMessage, args, message, subreddit, rType)
         } else return;
       }
 
@@ -189,9 +169,6 @@ module.exports = function () {
       }
 
       if (hasTxt === true) {
-        if (rType.includes('predefined-image')) {
-          return redditGetPost(args, message, subreddit, rType, subreddits)
-        }
 
         if (post.title.length > 256) {
           var rTitle = `${post.title.slice(0, 253)}...`
@@ -231,7 +208,7 @@ module.exports = function () {
           var botMessage = await message.channel.send({ embeds: [rPost] })
         }
 
-        if (rType.includes('random')) {
+        if (rType === 'random') {
           randomPostReaction(botMessage, args, message, subreddit, rType, subreddits);
         }
       }
@@ -260,9 +237,6 @@ module.exports = function () {
         } else if (!post.url.includes(post.id)) {
           rMessage = rMessage.concat(`${post.url}\n`)
         } else {
-          if (rType.includes('predefined-image')) {
-            return redditGetPost(args, message, subreddit, rType, subreddits)
-          }
           rMessage = rMessage.concat(`\n`)
         }
         rMessage = rMessage.concat(`Requested by ${message.author.tag} ${tutuEmote} | [${post.id}]`)
@@ -277,12 +251,12 @@ module.exports = function () {
 
         var botMessage = await message.channel.send({ content: rMessage, components: [row] });
 
-        if (rType.includes('random')) {
-          randomPostReaction(botMessage, args, message, subreddit, rType, subreddits);
+        if (rType === 'random') {
+          randomPostReaction(botMessage, args, message, subreddit, rType);
         }
       }
 
-      if (rType.includes('top') || rType == 'user' || rType === 'search') {
+      if (rType === 'top' || rType === 'user' || rType === 'search') {
         redditTop(botMessage, rListing, args, rType, message, subreddit)
       }
 
@@ -331,7 +305,7 @@ module.exports = function () {
   }
 
   //react to random posts
-  function randomPostReaction(botMessage, args, message, subreddit, rType, subreddits) {
+  function randomPostReaction(botMessage, args, message, subreddit, rType) {
     botMessage.react('🔄')
     const filter = (reaction, user) => {
       return reaction.emoji.name === '🔄' && user.id === message.author.id;
@@ -340,7 +314,7 @@ module.exports = function () {
     const collector = botMessage.createReactionCollector({ filter, time: 6000000 });
 
     collector.on('collect', async (reaction, user) => {
-      await redditGetPost(args, message, subreddit, rType, subreddits)
+      await redditGetPost(args, message, subreddit, rType)
       botMessage.reactions.cache.get('🔄').remove()
       collector.stop()
     })
@@ -350,12 +324,7 @@ module.exports = function () {
     });
   }
 
-  async function redditIntro(message, subreddit, rType, subreddits, time, query, sort) {
-    if (rType.includes('random-predefined')) {
-      const embedTitle = 'Reddit'
-      const embedMsg = `Getting random posts from **r/${subreddits.join(', r/')}**...`
-      msgEmbed(message, embedTitle, embedMsg)
-    }
+  async function redditIntro(message, subreddit, rType, time, query, sort) {
     if (rType === 'search') {
       if (time === 'all') {
         var timespanTxt = 'any time'
@@ -396,7 +365,7 @@ module.exports = function () {
     }
     if (rType === 'random') {
       const embedTitle = 'Reddit'
-      const embedMsg = `Getting random posts from **${subreddits}**...`
+      const embedMsg = `Getting random posts from **${subreddit}**...`
       msgEmbed(message, embedTitle, embedMsg)
     }
   }
