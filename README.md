@@ -4,19 +4,19 @@
 
 A simple, Reddit-focused Discord bot.
 
-Invite it to your server: https://imvasi.com/tutubot
+Add it to your server: https://tutu.imvasi.com
 
 ## Features 
 
 ### Reddit
 
-- 🔀 Get random posts of any subreddit
 - 🔝 Get top posts, hourly/daily/weekly/monthly/yearly/overall
+- 🔀 Get random posts of any subreddit
 - 🆔 Get posts by their ID
+- 🔎 Search for any Reddit post with an advanced search command
 - 👤 Get posts from any Reddit user
 - 💨 Easy and fast navigation with reactions
 - 🔞 NSFW protection, such posts are only shown in NSFW channels
-- 😌 Many predefined, user-friendly subreddit commands, for memes, cute animals, etc. with more getting added over time
 
 ### Urban Dictionary
 
@@ -29,8 +29,8 @@ Invite it to your server: https://imvasi.com/tutubot
 ### Hosted Version
 
 Tutu Bot is already hosted by me and is running 24/7.  
-You can invite it to your server here:  
-https://imvasi.com/tutubot
+You can add it to your server here:  
+https://tutu.imvasi.com
 
 ### Install & Host by yourself
 
