@@ -19,17 +19,18 @@ module.exports = function () {
   //get reddit post
   this.redditGetPost = async function (args, message, subreddit, rType, time, query, sort) {
     if (!subreddit) {
+      let errorMsg;
       if (rType === 'user') {
-        var errorMsg = `Please provide a user.`
+        errorMsg = `Please provide a user.`
       } else if (rType === 'id') {
-        var errorMsg = `Please provide a post ID.`
+        errorMsg = `Please provide a post ID.`
       } else {
-        var errorMsg = `Please provide a subreddit.`
+        errorMsg = `Please provide a subreddit.`
       }
       return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
     }
 
-    var post;
+    let post;
 
     try {
 
@@ -110,8 +111,8 @@ module.exports = function () {
 
   //format and send post
   async function redditPost(post, args, rType, message, subreddit) {
-    //console.log(post)
     args = 0 //so it doesn't show the intro again
+    let botMessage;
 
     if (typeof rListing !== 'undefined') {
       if (rListing.length === 0) {
@@ -145,96 +146,93 @@ module.exports = function () {
         } else return;
       }
 
+      let subText;
+      let hasTxt;
       if (post.selftext !== '') { //if post has text
-        var subText = post.selftext
-        var hasTxt = true
+        subText = post.selftext
+        hasTxt = true
       } else if (post.crosspost_parent_list) { //if post is crosspost
         if (post.crosspost_parent_list[0].selftext !== '') { //if crosspost has text
-          var subText = post.crosspost_parent_list[0].selftext
-          var hasTxt = true
+          subText = post.crosspost_parent_list[0].selftext
+          hasTxt = true
         }
       }
 
+      let hasUrl;
       if (post.url !== '') { //if post has url
-        var hasUrl = true
+        hasUrl = true
       }
 
-      var galleryIds = []
+      let galleryIds = []
       if (post.is_gallery === true) { //if post is gallery
-        var validPosts = Object.values(post.media_metadata).filter((image) => image.status === 'valid');
+        const validPosts = Object.values(post.media_metadata).filter((image) => image.status === 'valid');
         for (x = 0; x < validPosts.length; x++) {
           galleryIds[x] = `https://i.redd.it/${validPosts[x].id}.${validPosts[x].m.split('/').pop()}`
         }
       } else if (post.crosspost_parent_list) {
         if (post.crosspost_parent_list[0].is_gallery === true) {
-          var validPosts = Object.values(post.crosspost_parent_list[0].media_metadata).filter((image) => image.status === 'valid');
+          const validPosts = Object.values(post.crosspost_parent_list[0].media_metadata).filter((image) => image.status === 'valid');
           for (x = 0; x < validPosts.length; x++) {
             galleryIds[x] = `https://i.redd.it/${validPosts[x].id}.${validPosts[x].m.split('/').pop()}`
           }
         }
       }
 
+      //Text Posts
       if (hasTxt === true) {
-
+        let rTitle;
         if (post.title.length > 256) {
-          var rTitle = `${post.title.slice(0, 253)}...`
+          rTitle = `${post.title.slice(0, 253)}...`
           subText = subText.replace(/^/, `...${post.title.slice(253, post.title.length)}\n\n---\n\n`)
         } else { rTitle = post.title }
 
-        var rText = []
-        var size = subText.length / 4096;
         const subIcon = await r.getSubreddit(post.subreddit.display_name).community_icon
-
-        for (let i = 0; i < size; i++) {
-          rText[i] = subText.slice(4096 * i, (4096 * i) + 4096)
-        }
-
-        for (let i = 0; i < rText.length; i++) {
-          var rPost = new Discord.MessageEmbed()
-            .setColor(tutuColor)
-            .setTitle(rTitle)
-            .setURL(`https://www.reddit.com${post.permalink}`)
-            .setFooter(`Requested by ${message.author.tag} ${tutuEmote} | [${post.id}]`, message.author.avatarURL())
-            .setDescription(rText[i])
-
-          var rAuthor = ''
-
+        let rAuthor = ''
           if (post.pinned === true) {
             rAuthor = rAuthor.concat(`📌 `)
           }
-
           if (post.over_18 === true) {
             rAuthor = rAuthor.concat(`🔞 `)
           }
-
           if (post.archived === true) {
             rAuthor = rAuthor.concat(`🗃️ `)
           }
-
           if (post.locked === true) {
             rAuthor = rAuthor.concat(`🔒 `)
           }
-
           rAuthor = rAuthor.concat(`${post.subreddit_name_prefixed} •`)
 
           if (post.crosspost_parent_list) {
             rAuthor = rAuthor.concat(` 🔀 Crossposted`)
           }
-
           rAuthor = rAuthor.concat(` by u/${post.author.name}`)
-          rPost.setTimestamp(Math.floor(post.created * 1000))
 
-          rPost.setAuthor(rAuthor, subIcon)
-
-          var rInfo = ''
+        let rInfo = ''
           if (post.hide_score === false) {
-            rInfo = rInfo.concat(`👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)\n`)
+          rInfo = rInfo.concat(`📅 <t:${post.created}:R>\n👍 ${post.ups} (${post.upvote_ratio * 100}% upvoted)\n`)
           }
           rInfo = rInfo.concat(`💬 ${post.num_comments}`)
+
+        const size = subText.length / 4096;
+        let rText = []
+        for (let i = 0; i < size; i++) {
+          rText[i] = subText.slice(4096 * i, (4096 * i) + 4096)
+        }
+
+        for (let i = 0; i < rText.length; i++) {
+          let rPost = new Discord.MessageEmbed()
+            .setColor(tutuColor)
+            .setTitle(rTitle)
+            .setURL(`https://www.reddit.com${post.permalink}`)
+            .setFooter(`Requested by ${message.author.tag} ${tutuEmote} | [${post.id}]`, message.author.avatarURL())
+            .setDescription(rText[i])
+            .setAuthor(rAuthor, subIcon)
+
           if (i === rText.length - 1) {
-            rPost.addField('Stats', rInfo)
+            rPost.addField('Info', rInfo)
           }
-          var botMessage = await message.channel.send({ embeds: [rPost] })
+
+          botMessage = await message.channel.send({ embeds: [rPost] })
         }
 
         if (rType === 'random') {
@@ -242,27 +240,23 @@ module.exports = function () {
         }
       }
 
+      //Non Text Posts
       if (hasUrl === true && hasTxt !== true) {
-        var rMessage = ''
-
+        let rMessage = ''
         if (post.pinned === true) {
           rMessage = rMessage.concat(`📌 `)
         }
-
         if (post.over_18 === true) {
           rMessage = rMessage.concat(`🔞 `)
         }
-
         if (post.archived === true) {
           rMessage = rMessage.concat(`🗃️ `)
         }
-
         if (post.locked === true) {
           rMessage = rMessage.concat(`🔒 `)
         }
 
         rMessage = rMessage.concat(`${post.subreddit_name_prefixed}`)
-
         rMessage = rMessage.concat(` •`)
 
         if (post.crosspost_parent_list) {
@@ -298,7 +292,7 @@ module.exports = function () {
               .setURL(`https://reddit.com${post.permalink}`)
           );
 
-        var botMessage = await message.channel.send({ content: rMessage, components: [row] });
+        botMessage = await message.channel.send({ content: rMessage, components: [row] });
 
         if (rType === 'random') {
           randomPostReaction(botMessage, args, message, subreddit, rType);
@@ -327,7 +321,7 @@ module.exports = function () {
     collector.on('collect', async (reaction, user) => {
       await Listing.fetchMore({ amount: 1, skipReplies: true, append: false }).then(async Listing => {
         if (Listing.isFinished === true) {
-          var rFinished = new Discord.MessageEmbed()
+          let rFinished = new Discord.MessageEmbed()
             .setTitle(`That's all for now!`)
             .setColor(tutuColor)
             .setFooter(`${message.author.tag}`, message.author.avatarURL())
@@ -374,58 +368,49 @@ module.exports = function () {
   }
 
   async function redditIntro(message, subreddit, rType, time, query, sort) {
-    if (rType === 'search') {
+    let timespanTxt;
+    let subredditTxt;
       if (time === 'all') {
-        var timespanTxt = 'any time'
+      timespanTxt = 'any time'
       } else {
-        var timespanTxt = 'this ' + time
+      timespanTxt = 'this ' + time
       }
       if (subreddit === 'all') {
-        var subredditTxt = 'all Reddit'
+      if (rType === 'search') {
+        subredditTxt = 'all Reddit'
       } else {
-        var subredditTxt = subreddit
+        subredditTxt = 'all Reddit posts'
       }
+    } else {
+      subredditTxt = subreddit
+    }
+
+    let embedTitle;
+    let embedMsg;
+    if (rType === 'search') {
+      let queryTxt
       if (query.length > 100) {
-        var queryTxt = query.slice(0, 100) + '...'
-      } else { var queryTxt = query }
-      const embedTitle = 'Reddit'
-      const embedMsg = `Searching for **${queryTxt}** in **${subredditTxt} posts** of **${timespanTxt}**, and sorting by **${sort}**...`
-      msgEmbed(message, embedTitle, embedMsg)
+        queryTxt = query.slice(0, 100) + '...'
+      } else { queryTxt = query }
+      embedTitle = 'Reddit'
+      embedMsg = `Searching for **${queryTxt}** in **${subredditTxt}** posts from **${timespanTxt}**, and sorting by **${sort}**...`
     }
     if (rType === 'id') {
-      const embedTitle = 'Reddit'
-      const embedMsg = `Getting the Reddit post with ID **${subreddit}**...`
-      msgEmbed(message, embedTitle, embedMsg)
+      embedTitle = 'Reddit'
+      embedMsg = `Getting the Reddit post with ID **${subreddit}**...`
     }
     if (rType === 'user') {
-      const embedTitle = 'Reddit'
-      const embedMsg = `Getting the posts of user **${subreddit}**...`
-      msgEmbed(message, embedTitle, embedMsg)
+      embedTitle = 'Reddit'
+      embedMsg = `Getting the posts of user **${subreddit}**...`
     }
     if (rType === 'top') {
-      if (time === 'all') {
-        var timespanTxt = 'any time'
-      } else {
-        var timespanTxt = 'this ' + time
-      }
-      if (subreddit === 'all') {
-        var subredditTxt = 'all Reddit posts'
-      } else {
-        var subredditTxt = subreddit
-      }
-      const embedTitle = 'Reddit'
-      const embedMsg = `Getting the top posts of **${timespanTxt}** from **${subredditTxt}**...`
-      msgEmbed(message, embedTitle, embedMsg)
+      embedTitle = 'Reddit'
+      embedMsg = `Getting the top posts of **${timespanTxt}** from **${subredditTxt}**...`
     }
     if (rType === 'random') {
-      if (subreddit === 'all') {
-        var subredditTxt = 'all Reddit posts'
-      } else {
-        var subredditTxt = subreddit
+      embedTitle = 'Reddit'
+      embedMsg = `Getting random posts from **${subredditTxt}**...`
       }
-      const embedTitle = 'Reddit'
-      const embedMsg = `Getting random posts from **${subredditTxt}**...`
       msgEmbed(message, embedTitle, embedMsg)
-    }
   }
 }
