@@ -1,27 +1,38 @@
 module.exports = {
-  name: 'top',
-  aliases: ['t'],
-  description: 'Shows the top Reddit posts from your selected subreddit.',
+  name: "top",
+  aliases: ["t"],
+  description: "Shows the top Reddit posts from your selected subreddit.",
   async execute(message, args) {
-
+    let subreddit;
     if (!args[0]) {
-      const errorMsg = `Please provide a subreddit.`
-      return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+      const errorMsg = `Please provide a subreddit.`;
+      return errorEmbed(
+        message,
+        errorMsg,
+        message.author.avatarURL(),
+        message.author.tag
+      );
     } else {
-      var subreddit = args[0]
+      subreddit = args[0];
     }
 
+    let time;
     if (!args[1]) {
-      var time = 'day'
+      time = "day";
     } else {
-      if (['hour', 'day', 'week', 'month', 'year', 'all'].includes(args[1])) {
-        var time = args[1]
+      if (["hour", "day", "week", "month", "year", "all"].includes(args[1])) {
+        time = args[1];
       } else {
-        const errorMsg = `Please provide a valid timespan.\nAvailable timespans are: **hour, day, week, month, year, all**.\nThis option describes the timespan that posts should be retrieved from.`
-        return errorEmbed(message, errorMsg, message.author.avatarURL(), message.author.tag)
+        const errorMsg = `Please provide a valid timespan.\nAvailable timespans are: **hour, day, week, month, year, all**.\nThis option describes the timespan that posts should be retrieved from.`;
+        return errorEmbed(
+          message,
+          errorMsg,
+          message.author.avatarURL(),
+          message.author.tag
+        );
       }
     }
-    var rType = 'top'
-    redditGetPost(args, message, subreddit, rType, time)
+    const rType = "top";
+    redditGetPost(args, message, subreddit, rType, time);
   },
 };
