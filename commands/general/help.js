@@ -24,6 +24,11 @@ module.exports = {
           value:
             "Shows the top posts of a subreddit\nAvailable timespans are: **hour, day, week, month, year, all**",
         },
+        {
+          name: `new [subreddit]`,
+          value:
+            "For the brave ones who like sorting by new",
+        },
         { name: `user [a Reddit user]`, value: "Shows posts of a Reddit user" },
         {
           name: `random [subreddit]`,
