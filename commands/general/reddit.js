@@ -16,7 +16,7 @@ module.exports = function () {
     password: redditCredentials.password,
   });
 
-  r.config({ warnings: true, maxRetryAttempts: 2 });
+  r.config({ warnings: true, maxRetryAttempts: 2, continueAfterRatelimitError: true });
 
   //get reddit post
   this.redditGetPost = async function (
@@ -96,6 +96,15 @@ module.exports = function () {
       if (rType === "top") {
         await r
           .getTop(args[0], { time: time, limit: 1, skipReplies: true })
+          .then(async (Listing) => {
+            post = Listing[0];
+            rListing = Listing;
+            redditPost(post, args, rType, message, subreddit);
+          });
+      }
+      if (rType === "new") {
+        await r
+          .getNew(args[0], { limit: 1, skipReplies: true })
           .then(async (Listing) => {
             post = Listing[0];
             rListing = Listing;
@@ -365,7 +374,6 @@ module.exports = function () {
       }
 
       //Non Text Posts
-      console.log(post);
       if (hasUrl === true && hasTxt !== true) {
         let rMessage = "";
         if (post.pinned === true) {
@@ -412,11 +420,11 @@ module.exports = function () {
           for (let x = 0; x < galleryIds.length; x++) {
             rMessage = rMessage.concat(`${galleryIds[x]}\n`);
           }
-        } else if (post.media !== null && 'reddit_video' in post.media) {
+        } else if (post.media !== null && "reddit_video" in post.media) {
           rMessage = rMessage.concat(
             `${post.media.reddit_video.fallback_url}\n`
           );
-        } else if (post.url.startsWith("https://www.redgifs.com/watch/")) {
+        } else if (post.url.includes("redgifs.com/watch/")) {
           //redgifs intergration
           const redGifUrl = await fetch(
             `https://api.redgifs.com/v2/gifs/${
@@ -450,7 +458,12 @@ module.exports = function () {
         }
       }
 
-      if (rType === "top" || rType === "user" || rType === "search") {
+      if (
+        rType === "top" ||
+        rType === "user" ||
+        rType === "search" ||
+        rType === "new"
+      ) {
         redditTop(botMessage, rListing, args, rType, message, subreddit);
       }
     } catch (error) {
@@ -486,7 +499,7 @@ module.exports = function () {
             .setTitle(`That's all for now!`)
             .setColor(tutuColor)
             .setFooter(`${message.author.tag}`, message.author.avatarURL());
-          if (rType === "top") {
+          if (rType === "top" || rType === "new") {
             rFinished.setDescription(
               "You saw all the available posts for this subreddit."
             );
@@ -582,6 +595,10 @@ module.exports = function () {
     if (rType === "random") {
       embedTitle = "Reddit";
       embedMsg = `Getting random posts from **${subredditTxt}**...`;
+    }
+    if (rType === "new") {
+      embedTitle = "Reddit";
+      embedMsg = `Getting the new posts from **${subredditTxt}**...`;
     }
     msgEmbed(message, embedTitle, embedMsg);
   }
