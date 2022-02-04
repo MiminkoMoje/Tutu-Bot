@@ -4,7 +4,6 @@ const fetch = require("node-fetch");
 const { MessageActionRow, MessageButton } = require("discord.js");
 const { redditCredentials } = require(`${require.main.path}/config.json`);
 require(`${require.main.path}/events/embeds.js`)();
-require(`${require.main.path}/commands/vasilis/reddit-log.js`)();
 
 //connect with account
 module.exports = function () {
@@ -213,8 +212,6 @@ module.exports = function () {
           message.author.tag
         );
       }
-
-      getPostId(post, message); //logging
 
       if (post.over_18 === true && !message.channel.nsfw) {
         //dont show nsfw post in non nsfw channel
