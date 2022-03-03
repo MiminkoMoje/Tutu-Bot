@@ -345,29 +345,35 @@ module.exports = function () {
         }
         rInfo = rInfo.concat(`💬 ${post.num_comments}`);
 
-        const size = subText.length / 4096;
-        let rText = [];
-        for (let i = 0; i < size; i++) {
-          rText[i] = subText.slice(4096 * i, 4096 * i + 4096);
-        }
-
-        for (let i = 0; i < rText.length; i++) {
-          let rPost = new Discord.MessageEmbed()
-            .setColor(tutuColor)
-            .setTitle(rTitle)
-            .setURL(`https://www.reddit.com${post.permalink}`)
-            .setFooter(
-              `Requested by ${message.author.tag} ${tutuEmote} | [${post.id}]`,
-              message.author.avatarURL()
-            )
-            .setDescription(rText[i])
-            .setAuthor(rAuthor, subIcon);
-
-          if (i === rText.length - 1) {
-            rPost.addField("Info", rInfo);
+        let rPost = new Discord.MessageEmbed()
+          .setColor(tutuColor)
+          .setTitle(rTitle)
+          .setURL(`https://www.reddit.com${post.permalink}`)
+          .setFooter(
+            `Requested by ${message.author.tag} ${tutuEmote} | [${post.id}]`,
+            message.author.avatarURL()
+          )
+          .setAuthor(rAuthor, subIcon);
+        const textWords = subText.split(" ");
+        let i = 0;
+        let size = 0;
+        let rText = "";
+        while (i < textWords.length) {
+          if (size + textWords[i].length + 1 < 4096) {
+            rText = rText.concat(textWords[i] + " ");
+            size = size + textWords[i].length + 1;
+            i = i + 1;
+          } else {
+            rPost.setDescription(rText);
+            botMessage = await message.channel.send({ embeds: [rPost] });
+            rText = "";
+            size = 0;
           }
-
-          botMessage = await message.channel.send({ embeds: [rPost] });
+          if (i === textWords.length) {
+            rPost.setDescription(rText);
+            rPost.addField("Info", rInfo);
+            botMessage = await message.channel.send({ embeds: [rPost] });
+          }
         }
 
         if (rType === "random") {
