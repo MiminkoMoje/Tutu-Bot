@@ -1,8 +1,8 @@
 const fs = require("fs");
 const { Client, Intents, Collection } = require("discord.js");
-const { defPrefix, token, ownerId, bannedUserID } = require("./config.json");
+const { defPrefix, token, bannedUserID } = require("./config.json");
 require(`${require.main.path}/events/embeds.js`)();
-require(`${require.main.path}/commands/general/reddit.js`)();
+require(`${require.main.path}/commands/reddit/reddit.js`)();
 
 const prefix = require("discord-prefix");
 const defaultPrefix = defPrefix;
@@ -18,8 +18,6 @@ const client = new Client({
   partials: ["CHANNEL"],
 });
 client.commands = new Collection();
-
-//require(`${require.main.path}/commands/redditEvent/loadEvents.js`)(client);
 
 const commandFolders = fs.readdirSync("./commands");
 const eventFiles = fs
@@ -76,75 +74,40 @@ client.on("messageCreate", (message) => {
 
   try {
     if (bannedUserID.includes(message.author.id)) {
-      const errorMsg = `You have been blocked from using Tutu Bot.`;
-      return errorEmbed(
-        message,
-        errorMsg,
-        message.author.avatarURL(),
-        message.author.tag
-      );
+      return errorEmbed(message, "You have been blocked from using Tutu Bot.");
     }
 
     if (command.disabled) {
-      const errorMsg = `This command is disabled.`;
-      return errorEmbed(
-        message,
-        errorMsg,
-        message.author.avatarURL(),
-        message.author.tag
-      );
+      return errorEmbed(message, "This command is disabled.");
     }
 
     if (message.channel.type === "DM") {
-      const errorMsg = `You can't use commands here! Use a server.`;
-      return errorEmbed(
-        message,
-        errorMsg,
-        message.author.avatarURL(),
-        message.author.tag
-      );
+      return errorEmbed(message, "You can't use commands here! Use a server.");
     }
 
     if (command.nsfwCommand && !message.channel.nsfw) {
-      const errorMsg = `This command can only be used in NSFW channels.`;
       return errorEmbed(
         message,
-        errorMsg,
-        message.author.avatarURL(),
-        message.author.tag
+        "This command can only be used in NSFW channels."
       );
     }
 
     if (command.permissions) {
-      if (message.channel.type === "DM") {
-        return errorGuildOnly(
+      const authorPerms = message.channel.permissionsFor(message.author);
+      if (!authorPerms || !authorPerms.has(command.permissions)) {
+        return errorEmbed(
           message,
-          message.author.avatarURL(),
-          message.author.tag
+          "You do not have permission to use this command."
         );
-      } else {
-        const authorPerms = message.channel.permissionsFor(message.author);
-        if (!authorPerms || !authorPerms.has(command.permissions)) {
-          const errorMsg = `You do not have permission to use this command.`;
-          return errorEmbed(
-            message,
-            errorMsg,
-            message.author.avatarURL(),
-            message.author.tag
-          );
-        }
       }
     }
 
     command.execute(message, args, client);
   } catch (error) {
     console.error(error);
-    const errorMsg = `An error occured trying to execute that command, please contact Vasilis#1517.`;
     return errorEmbed(
       message,
-      errorMsg,
-      message.author.avatarURL(),
-      message.author.tag
+      "An error occured trying to execute that command, please contact Vasilis#1517."
     );
   }
 });

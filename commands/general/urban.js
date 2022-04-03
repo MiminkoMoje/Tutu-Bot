@@ -1,7 +1,6 @@
 const fetch = require("node-fetch");
 const querystring = require("querystring");
-const Discord = require("discord.js");
-require(`${require.main.path}/events/embeds.js`)();
+const { MessageEmbed } = require("discord.js");
 
 module.exports = {
   name: "urban",
@@ -26,13 +25,7 @@ module.exports = {
 
     //stop here and show error if user didn't include any query
     if (!args.length) {
-      const errorMsg = `You need to supply a search term.`;
-      return errorEmbed(
-        message,
-        errorMsg,
-        message.author.avatarURL(),
-        message.author.tag
-      );
+      return errorEmbed(message, "You need to supply a search term.");
     }
 
     let i = 0; //in case user didn't include a result number with their query, we pre define it here (0 = 1st result)
@@ -45,13 +38,7 @@ module.exports = {
         i = args[0] - 1;
         delete args[0]; //we delete the result number and we only keep the query
       } else {
-        const errorMsg = `Only numbers from 1 to 10 are allowed.`;
-        return errorEmbed(
-          message,
-          errorMsg,
-          message.author.avatarURL(),
-          message.author.tag
-        ); //for some reason the api only fetches 10 results. fuck that.
+        return errorEmbed(message, "Only numbers from 1 to 10 are allowed."); //for some reason the api only fetches 10 results. fuck that.
       }
     }
 
@@ -62,19 +49,12 @@ module.exports = {
     ).then((response) => response.json());
     try {
       if (!list.length) {
-        return errorNoResults(
-          message,
-          message.author.avatarURL(),
-          message.author.tag
-        );
+        return errorNoResults(message);
       }
     } catch (error) {
-      const errorMsg = `There is an error with this definition. Sorry for the inconvience.`;
       return errorEmbed(
         message,
-        errorMsg,
-        message.author.avatarURL(),
-        message.author.tag
+        "There is an error with this definition. Sorry for the inconvience."
       );
     }
 
@@ -130,14 +110,11 @@ module.exports = {
       try {
         uResult = list[i].definition;
       } catch (err) {
-        const errorMsg = `There is no ${i + 1}${uEnd} definition of *${args
-          .join(" ")
-          .trimStart()}*.`;
         return errorEmbed(
           message,
-          errorMsg,
-          message.author.avatarURL(),
-          message.author.tag
+          `There is no ${i + 1}${uEnd} definition of *${args
+            .join(" ")
+            .trimStart()}*.`
         );
       }
 
@@ -197,16 +174,16 @@ module.exports = {
         uExampleArray[y] = uExample.slice(1020 * y, 1020 * y + 1020);
       }
 
-      let resultEmbed = new Discord.MessageEmbed()
+      let resultEmbed = new MessageEmbed()
         .setColor(tutuColor)
         .setTitle(uTerm)
         .setURL(uUrl)
-        .setFooter(
-          `Requested by ${message.author.tag} ${tutuEmote} | ${i + 1}/${
+        .setFooter({
+          text: `Requested by ${message.author.tag} ${tutuEmote} | ${i + 1}/${
             list.length
           }`,
-          message.author.avatarURL()
-        );
+          iconURL: message.author.avatarURL(),
+        });
 
       y = 0;
       let botMessage;
@@ -216,8 +193,8 @@ module.exports = {
           uResTitle = `Definition (part ${y + 1})`;
           uExTitle = `Example (part ${y + 1})`;
         } else {
-          uResTitle = `Definition`;
-          uExTitle = `Example`;
+          uResTitle = "Definition";
+          uExTitle = "Example";
         }
 
         if (uResLenght > 0) {

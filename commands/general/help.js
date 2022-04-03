@@ -1,18 +1,17 @@
-require(`${require.main.path}/events/embeds.js`)();
-const Discord = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 
 module.exports = {
   name: "help",
-  aliases: ["commands", "command"],
+  aliases: ["commands", "command", "reddit"],
   description: "Shows the available commands.",
   execute(message) {
-    var helpEmbed = new Discord.MessageEmbed()
+    const helpEmbed = new MessageEmbed()
       .setColor(tutuColor)
-      .setTitle(`Commands`)
-      .setFooter(
-        `Requested by ${message.author.tag} ${tutuEmote} | by Vasilis#1517`,
-        message.author.avatarURL()
-      )
+      .setTitle("Commands")
+      .setFooter({
+        text: `Requested by ${message.author.tag} ${tutuEmote} | by Vasilis#1517`,
+        iconURL: message.author.avatarURL(),
+      })
       .addFields(
         {
           name: `help`,
@@ -26,8 +25,7 @@ module.exports = {
         },
         {
           name: `new [subreddit]`,
-          value:
-            "For the brave ones who like sorting by new",
+          value: "For the brave ones who like sorting by new",
         },
         { name: `user [a Reddit user]`, value: "Shows posts of a Reddit user" },
         {

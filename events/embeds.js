@@ -1,20 +1,37 @@
 module.exports = function () {
-  this.errorEmbed = function (message, errorMsg, avatarURL, authorTag) {
+  this.errorEmbed = function (message, errorMsg) {
     const embed = {
-      title: `Error`,
+      title: "Error",
       description: errorMsg,
       color: errorColor,
       footer: {
-        icon_url: avatarURL,
-        text: authorTag,
+        icon_url: message.author.avatarURL(),
+        text: message.author.tag,
       },
     };
     if (typeof message === "number") {
-      message.client.channels.cache.get(message).send({ embeds: [embed] });
+      return message.client.channels.cache.get(message).send({ embeds: [embed] });
     } else {
-      message.channel.send({ embeds: [embed] });
+      return message.channel.send({ embeds: [embed] });
     }
   };
+
+  this.customErrorEmbed = function (message, errorTitle, errorMsg) {
+    const embed = {
+      title: errorTitle,
+      description: errorMsg,
+      color: errorColor,
+      footer: {
+        icon_url: message.author.avatarURL(),
+        text: message.author.tag,
+      },
+    };
+    if (typeof message === "number") {
+      return message.client.channels.cache.get(message).send({ embeds: [embed] });
+    } else {
+      return message.channel.send({ embeds: [embed] });
+    }
+  }
 
   this.msgEmbed = function (message, embedTitle, embedMsg) {
     const embed = {
@@ -33,14 +50,14 @@ module.exports = function () {
     }
   };
 
-  this.errorNoResults = function (message, avatarURL, authorTag) {
+  this.notifEmbed = function (message, embedTitle, embedMsg) {
     const embed = {
-      title: `Error`,
-      description: `No results found.`,
-      color: errorColor,
+      title: embedTitle,
+      description: embedMsg,
+      color: tutuColor,
       footer: {
-        icon_url: avatarURL,
-        text: authorTag,
+        icon_url: message.author.avatarURL(),
+        text: message.author.tag,
       },
     };
     if (typeof message === "number") {
@@ -50,14 +67,14 @@ module.exports = function () {
     }
   };
 
-  this.error503Reddit = function (message, avatarURL, authorTag) {
+  this.errorNoResults = function (message) {
     const embed = {
-      title: `Error 503`,
-      description: `Reddit servers are unavailable right now, please try again.`,
+      title: "Error",
+      description: "No results found.",
       color: errorColor,
       footer: {
-        icon_url: avatarURL,
-        text: authorTag,
+        icon_url: message.author.avatarURL(),
+        text: message.author.tag,
       },
     };
     if (typeof message === "number") {
