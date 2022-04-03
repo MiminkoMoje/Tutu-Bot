@@ -84,7 +84,9 @@ typings/
 #Used for personal purposes
 events/message.js
 commands/vasilis/
+commands/old/
 events/tutu/
 prefixes.db
 events/taunts.js
 .prettierrc
+.vscode/settings.json
