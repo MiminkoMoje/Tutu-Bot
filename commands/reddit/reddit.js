@@ -2,7 +2,6 @@ const snoowrap = require("snoowrap");
 const fetch = require("node-fetch");
 const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 const { redditCredentials } = require(`${require.main.path}/config.json`);
-require(`${require.main.path}/commands/vasilis/reddit-log.js`)();
 
 module.exports = function () {
   const r = new snoowrap({
@@ -125,9 +124,6 @@ module.exports = function () {
 
     const post = options.listing[0] || options.listing;
 
-    // delete post.comments;
-    // console.log(post);
-
     if (post.removed_by_category === "deleted") {
       return errorEmbed(
         message,
@@ -150,10 +146,6 @@ module.exports = function () {
         `[This](https://reddit.com${post.permalink}) post has been removed.`
       );
     }
-
-    /////////LOGGING/////////
-    getPostId(post, message);
-    /////////LOGGING/////////
 
     if (post.over_18 && !message.channel.nsfw) {
       options.botMessage = await errorEmbed(
