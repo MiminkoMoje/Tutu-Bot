@@ -137,13 +137,17 @@ module.exports = function () {
     } else if (post.removed_by_category === "moderator") {
       return errorEmbed(
         message,
-        `[This](https://reddit.com${post.permalink}) post has been removed by the moderators of ${post.subreddit_name_prefixed}`
+        `[This](https://reddit.com${post.permalink}) post has been removed by the moderators of ${post.subreddit_name_prefixed}.`
       );
-    } else if (post.removed_by_category) {
-      console.log(post.removed_by_category);
+    } else if (post.removed_by_category === "copyright_takedown") {
       return errorEmbed(
         message,
-        `[This](https://reddit.com${post.permalink}) post has been removed.`
+        `[This](https://reddit.com${post.permalink}) post has been removed by Reddit's Legal Operations team.`
+      );
+    } else if (post.removed_by_category) {
+      return errorEmbed(
+        message,
+        `[This](https://reddit.com${post.permalink}) post has been removed. (${post.removed_by_category})`
       );
     }
 
