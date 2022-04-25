@@ -85,6 +85,9 @@ module.exports = function () {
         } else if (error.error.reason === "banned") {
           errTitle = "Banned";
           errDesc = "This community is banned.";
+        } else if (error.error.reason === "private") {
+          errTitle = "Private";
+          errDesc = "This community is private.";
         } else if (error.statusCode === 404) {
           errTitle = "Error";
           errDesc = "No results found.";
