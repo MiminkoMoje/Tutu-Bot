@@ -1,3 +1,4 @@
+const { defPrefix } = require(`${require.main.path}/config.json`);
 const prefix = require("discord-prefix");
 module.exports = {
   name: "prefix",
@@ -7,16 +8,32 @@ module.exports = {
     if (!args[0]) {
       return errorEmbed(message, "Please specify a new prefix.");
     }
-    if (args[0] == prefix.getPrefix(message.guild.id)) {
+    if (
+      args[0] === "reset" &&
+      defPrefix === prefix.getPrefix(message.guild.id)
+    ) {
       return errorEmbed(
         message,
-        `\`${args[0]}\` is already the defined prefix, obviously...`
+        `\`${defPrefix}\` is already the defined prefix.`
+      );
+    } else if (args[0] === "reset") {
+      await prefix.setPrefix(defPrefix, message.guild.id);
+      return msgEmbed(
+        message,
+        "Prefix reset",
+        `The prefix has successfully been reset to \`${defPrefix}\`.`
+      );
+    }
+    if (args[0] === prefix.getPrefix(message.guild.id)) {
+      return errorEmbed(
+        message,
+        `\`${args[0]}\` is already the defined prefix.`
       );
     }
     if (args[0].length > 5) {
       return errorEmbed(
         message,
-        "The prefix length should be 5 characers max."
+        "The prefix length should be 5 characters max."
       );
     }
     await prefix.setPrefix(args[0], message.guild.id);
