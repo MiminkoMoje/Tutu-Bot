@@ -59,9 +59,22 @@ client.on("messageCreate", (message) => {
     guildPrefix = prefix.getPrefix(message.guild.id);
   }
   if (!guildPrefix) guildPrefix = defaultPrefix;
-  if (!message.content.startsWith(guildPrefix) || message.author.bot) return;
+  if (
+    (!message.content.startsWith(guildPrefix) &&
+      !message.content.startsWith(`<@${client.user.id}>`)) ||
+    message.author.bot
+  )
+    return;
 
-  const args = message.content.slice(guildPrefix.length).trim().split(/ +/);
+  let args;
+  if (message.content.startsWith(guildPrefix)) {
+    args = message.content.slice(guildPrefix.length).trim().split(/ +/);
+  } else if (message.content.startsWith(`<@${client.user.id}>`)) {
+    args = message.content
+      .slice(`<@${client.user.id}>`.length)
+      .trim()
+      .split(/ +/);
+  }
   const commandName = args.shift().toLowerCase();
 
   const command =
