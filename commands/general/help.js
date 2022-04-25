@@ -4,19 +4,25 @@ module.exports = {
   name: "help",
   aliases: ["commands", "command", "reddit"],
   description: "Shows the available commands.",
-  execute(message) {
+  execute(message, args) {
     const helpEmbed = new MessageEmbed()
       .setColor(tutuColor)
       .setTitle("Commands")
       .setFooter({
         text: `Requested by ${message.author.tag} ${tutuEmote} | by Vasilis#1517`,
         iconURL: message.author.avatarURL(),
-      })
-      .addFields(
+      });
+
+    if (args[0] === "admin") {
+      helpEmbed.addFields({
+        name: `prefix [new prefix]/reset`,
+        value: "Changes the bot prefix for this server",
+      });
+    } else {
+      helpEmbed.addFields(
         {
-          name: `help`,
-          value:
-            "This command eliminates racism and brings you good luck for 8.2 years",
+          name: `help admin`,
+          value: "Shows the available admin commands",
         },
         {
           name: `top [subreddit] (timespan)`,
@@ -51,6 +57,7 @@ module.exports = {
           value: "Shows the definition of any term using Urban Dictionary 😳",
         }
       );
+    }
     message.channel.send({ embeds: [helpEmbed] });
   },
 };
