@@ -127,31 +127,49 @@ module.exports = function () {
 
     const post = options.listing[0] || options.listing;
 
-    if (post.removed_by_category === "deleted") {
-      return errorEmbed(
-        message,
-        `[This](https://reddit.com${post.permalink}) post was deleted by the person who originally posted it.`
-      );
-    } else if (post.removed_by_category === "reddit") {
-      return errorEmbed(
-        message,
-        `[This](https://reddit.com${post.permalink}) post has been removed by Reddit.`
-      );
-    } else if (post.removed_by_category === "moderator") {
-      return errorEmbed(
-        message,
-        `[This](https://reddit.com${post.permalink}) post has been removed by the moderators of ${post.subreddit_name_prefixed}.`
-      );
-    } else if (post.removed_by_category === "copyright_takedown") {
-      return errorEmbed(
-        message,
-        `[This](https://reddit.com${post.permalink}) post has been removed by Reddit's Legal Operations team.`
-      );
-    } else if (post.removed_by_category) {
-      return errorEmbed(
-        message,
-        `[This](https://reddit.com${post.permalink}) post has been removed. (${post.removed_by_category})`
-      );
+    if (post.removed_by_category) {
+      if (post.removed_by_category === "deleted") {
+        errorEmbed(
+          message,
+          `[This](https://reddit.com${post.permalink}) post was deleted by the person who originally posted it.`
+        );
+      } else if (post.removed_by_category === "reddit") {
+        errorEmbed(
+          message,
+          `[This](https://reddit.com${post.permalink}) post has been removed by Reddit.`
+        );
+      } else if (post.removed_by_category === "moderator") {
+        errorEmbed(
+          message,
+          `[This](https://reddit.com${post.permalink}) post has been removed by the moderators of ${post.subreddit_name_prefixed}.`
+        );
+      } else if (post.removed_by_category === "copyright_takedown") {
+        errorEmbed(
+          message,
+          `[This](https://reddit.com${post.permalink}) post has been removed by Reddit's Legal Operations team.`
+        );
+      } else if (post.removed_by_category === "community_ops") {
+        errorEmbed(
+          message,
+          `[This](https://reddit.com${post.permalink}) post has been removed by Reddit's Community team.`
+        );
+      } else {
+        errorEmbed(
+          message,
+          `[This](https://reddit.com${post.permalink}) post has been removed. (${post.removed_by_category})`
+        );
+      }
+
+      if (
+        options.type === "top" ||
+        options.type === "user" ||
+        options.type === "new" ||
+        options.type === "search"
+      ) {
+        return nextPost(message, options);
+      } else if (options.type === "random") {
+        return anotherPost(message, options);
+      } else return;
     }
 
     if (post.over_18 && !message.channel.nsfw) {
