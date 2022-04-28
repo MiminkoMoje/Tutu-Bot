@@ -129,32 +129,32 @@ module.exports = function () {
 
     if (post.removed_by_category) {
       if (post.removed_by_category === "deleted") {
-        errorEmbed(
+        options.botMessage = await errorEmbed(
           message,
           `[This](https://reddit.com${post.permalink}) post was deleted by the person who originally posted it.`
         );
       } else if (post.removed_by_category === "reddit") {
-        errorEmbed(
+        options.botMessage = await errorEmbed(
           message,
           `[This](https://reddit.com${post.permalink}) post has been removed by Reddit.`
         );
       } else if (post.removed_by_category === "moderator") {
-        errorEmbed(
+        options.botMessage = await errorEmbed(
           message,
           `[This](https://reddit.com${post.permalink}) post has been removed by the moderators of ${post.subreddit_name_prefixed}.`
         );
       } else if (post.removed_by_category === "copyright_takedown") {
-        errorEmbed(
+        options.botMessage = await errorEmbed(
           message,
           `[This](https://reddit.com${post.permalink}) post has been removed by Reddit's Legal Operations team.`
         );
       } else if (post.removed_by_category === "community_ops") {
-        errorEmbed(
+        options.botMessage = await errorEmbed(
           message,
           `[This](https://reddit.com${post.permalink}) post has been removed by Reddit's Community team.`
         );
       } else {
-        errorEmbed(
+        options.botMessage = await errorEmbed(
           message,
           `[This](https://reddit.com${post.permalink}) post has been removed. (${post.removed_by_category})`
         );
