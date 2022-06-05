@@ -58,6 +58,21 @@ module.exports = function () {
           limit: 1,
           skipReplies: true,
         });
+      } else if (options.type === "hot") {
+        options.listing = await r.getHot(options.subreddit, {
+          limit: 1,
+          skipReplies: true,
+        });
+      } else if (options.type === "rising") {
+        options.listing = await r.getRising(options.subreddit, {
+          limit: 1,
+          skipReplies: true,
+        });
+      } else if (options.type === "controversial") {
+        options.listing = await r.getControversial(options.subreddit, {
+          limit: 1,
+          skipReplies: true,
+        });
       } else if (options.type === "random") {
         options.listing = await r.getRandomSubmission(options.subreddit, {
           skipReplies: true,
@@ -127,6 +142,11 @@ module.exports = function () {
 
     const post = options.listing[0] || options.listing;
 
+    //Skip pinned post
+    if (options.type === "hot" && (post.stickied || post.pinned)) {
+      return nextPost(message, options);
+    }
+
     if (post.removed_by_category) {
       if (post.removed_by_category === "deleted") {
         options.botMessage = await errorEmbed(
@@ -164,6 +184,9 @@ module.exports = function () {
         options.type === "top" ||
         options.type === "user" ||
         options.type === "new" ||
+        options.type === "hot" ||
+        options.type === "rising" ||
+        options.type === "controversial" ||
         options.type === "search"
       ) {
         return nextPost(message, options);
@@ -182,6 +205,9 @@ module.exports = function () {
         options.type === "top" ||
         options.type === "user" ||
         options.type === "new" ||
+        options.type === "hot" ||
+        options.type === "rising" ||
+        options.type === "controversial" ||
         options.type === "search"
       ) {
         return nextPost(message, options);
@@ -417,6 +443,9 @@ module.exports = function () {
       options.type === "top" ||
       options.type === "user" ||
       options.type === "new" ||
+      options.type === "hot" ||
+      options.type === "rising" ||
+      options.type === "controversial" ||
       options.type === "search"
     ) {
       return nextPost(message, options);
@@ -426,7 +455,7 @@ module.exports = function () {
   }
 
   async function nextPost(message, options) {
-    options.botMessage.react("⏩");
+    options.botMessage?.react("⏩");
     options.prevListing = options.listing[0];
 
     if (options.type === "subreddits") {
@@ -439,6 +468,14 @@ module.exports = function () {
         amount: 1,
         append: false,
       });
+    }
+
+    //Skip pinned post
+    if (
+      options.type === "hot" &&
+      (options.prevListing.stickied || options.prevListing.pinned)
+    ) {
+      return sendPost(message, options);
     }
 
     const filter = (reaction, user) => {
@@ -458,7 +495,11 @@ module.exports = function () {
       collector.stop();
 
       if (
-        (options.type === "top" || options.type === "new") &&
+        (options.type === "top" ||
+          options.type === "new" ||
+          options.type === "hot" ||
+          options.type === "rising" ||
+          options.type === "controversial") &&
         options.listing.isFinished
       ) {
         return notifEmbed(
@@ -573,7 +614,7 @@ module.exports = function () {
 
   function postStatus(post) {
     let status = "";
-    if (post.pinned) {
+    if (post.pinned || post.stickied) {
       status += "📌 ";
     }
     if (post.over_18) {
@@ -634,7 +675,7 @@ module.exports = function () {
       time = "all time";
     }
     if (options.type === "top") {
-      return `Getting the top posts of **r/${options.subreddit}** from **${time}**...`;
+      return `🔝 Getting the top posts of **r/${options.subreddit}** from **${time}**...`;
     } else if (options.type === "search") {
       let query;
       if (options.query.length > 100) {
@@ -648,19 +689,23 @@ module.exports = function () {
       } else {
         subreddit = `r/${options.subreddit}`;
       }
-      return `Searching for **${query}** in **${subreddit}** from posts of **${time}**, sorting by **${options.sort}**...`;
+      return `🔍 Searching for **${query}** in **${subreddit}** from posts of **${time}**, sorting by **${options.sort}**...`;
     } else if (options.type === "user") {
-      return `Getting the posts of user **u/${options.subreddit}**...`;
+      return `👤 Getting the posts of user **u/${options.subreddit}**...`;
     } else if (options.type === "new") {
-      return `Getting the new posts of **r/${options.subreddit}**...`;
-    } else if (options.type === "search") {
-      return `Searching for ${options.search}...`;
+      return `🌟 Getting the new posts of **r/${options.subreddit}**...`;
+    } else if (options.type === "hot") {
+      return `🔥 Getting the hot posts of **r/${options.subreddit}**...`;
+    } else if (options.type === "rising") {
+      return `📈 Getting the rising posts of **r/${options.subreddit}**...`;
+    } else if (options.type === "controversial") {
+      return `🗡️ Getting the controversial posts of **r/${options.subreddit}**...`;
     } else if (options.type === "random") {
-      return `Getting random posts from **r/${options.subreddit}**...`;
+      return `🔀 Getting random posts from **r/${options.subreddit}**...`;
     } else if (options.type === "id") {
-      return `Getting the post with ID **${options.subreddit}**...`;
+      return `🏷️ Getting the post with ID **${options.subreddit}**...`;
     } else if (options.type === "subreddits") {
-      return "Getting the most popular subreddits based on recent activity...";
+      return "📃 Getting the most popular subreddits based on recent activity...";
     }
   }
 
