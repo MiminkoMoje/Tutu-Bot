@@ -25,18 +25,30 @@ module.exports = {
           value: "Shows the available admin commands",
         },
         {
-          name: `top [subreddit] (timespan)`,
-          value:
-            "Shows the top posts of a subreddit\nAvailable timespans are: **hour, day, week, month, year, all**",
+          name: `hot [subreddit]`,
+          value: "Shows the hot posts of a subreddit",
         },
         {
           name: `new [subreddit]`,
           value: "For the brave ones who like sorting by new",
         },
+        {
+          name: `top [subreddit] (timespan)`,
+          value:
+            "Shows the top posts of a subreddit\nAvailable timespans are: **hour, day, week, month, year, all**",
+        },
+        {
+          name: `controversial [subreddit]`,
+          value: "Shows the controversial posts of a subreddit",
+        },
+        {
+          name: `rising [subreddit]`,
+          value: "Shows the rising posts of a subreddit",
+        },
         { name: `user [a Reddit user]`, value: "Shows posts of a Reddit user" },
         {
           name: `random [subreddit]`,
-          value: "Shows a random submission from a subreddit",
+          value: "Shows random submissions from a subreddit",
         },
         { name: `id [a Reddit post ID]`, value: "Gets a post from its ID" },
         {
@@ -50,7 +62,8 @@ module.exports = {
         },
         {
           name: `subreddits`,
-          value: "Shows the most popular subreddits, based on recent activity",
+          value:
+            "Shows the most popular subreddits, based on their recent activity",
         },
         {
           name: `urban [term]`,
