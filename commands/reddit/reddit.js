@@ -34,7 +34,7 @@ module.exports = function () {
       options.subreddit = options.subreddit.slice(2);
     }
 
-    options.subreddit = options.subreddit.slice(0, 21);
+    options.subreddit = options.subreddit.slice(0, 21).toLowerCase();
 
     msgEmbed(message, "Reddit", intro(options));
 
@@ -111,10 +111,10 @@ module.exports = function () {
           errDesc =
             "Reddit servers are unavailable right now, please try again.";
         } else {
-          errTitle = "Error " + error.statusCode;
+          errTitle = "Error";
+          error.statusCode && (errTitle += ` ${error.statusCode}`);
           errDesc = error.error.message || "Unknown error.";
-          errDesc += "\n";
-          errDesc += error.error.reason || "";
+          error.error.reason && (errDesc += `\n${error.error.reason}`);
         }
         return customErrorEmbed(message, errTitle, errDesc);
       } else {
@@ -180,19 +180,13 @@ module.exports = function () {
         );
       }
 
-      if (
-        options.type === "top" ||
-        options.type === "user" ||
-        options.type === "new" ||
-        options.type === "hot" ||
-        options.type === "rising" ||
-        options.type === "controversial" ||
-        options.type === "search"
-      ) {
-        return nextPost(message, options);
+      if (options.type === "id") {
+        return;
       } else if (options.type === "random") {
         return anotherPost(message, options);
-      } else return;
+      } else {
+        return nextPost(message, options);
+      }
     }
 
     if (post.over_18 && !message.channel.nsfw) {
@@ -201,19 +195,13 @@ module.exports = function () {
         `[This](https://reddit.com${post.permalink}) is a NSFW post, it can only be shown in NSFW channels.`
       );
 
-      if (
-        options.type === "top" ||
-        options.type === "user" ||
-        options.type === "new" ||
-        options.type === "hot" ||
-        options.type === "rising" ||
-        options.type === "controversial" ||
-        options.type === "search"
-      ) {
-        return nextPost(message, options);
+      if (options.type === "id") {
+        return;
       } else if (options.type === "random") {
         return anotherPost(message, options);
-      } else return;
+      } else {
+        return nextPost(message, options);
+      }
     }
 
     if (
@@ -439,18 +427,12 @@ module.exports = function () {
       });
     }
 
-    if (
-      options.type === "top" ||
-      options.type === "user" ||
-      options.type === "new" ||
-      options.type === "hot" ||
-      options.type === "rising" ||
-      options.type === "controversial" ||
-      options.type === "search"
-    ) {
-      return nextPost(message, options);
+    if (options.type === "id") {
+      return;
     } else if (options.type === "random") {
       return anotherPost(message, options);
+    } else {
+      return nextPost(message, options);
     }
   }
 
@@ -494,37 +476,32 @@ module.exports = function () {
         .catch((err) => {});
       collector.stop();
 
-      if (
-        (options.type === "top" ||
-          options.type === "new" ||
-          options.type === "hot" ||
-          options.type === "rising" ||
-          options.type === "controversial") &&
-        options.listing.isFinished
-      ) {
-        return notifEmbed(
-          message,
-          "That's all for now!",
-          "You saw all the available posts for this subreddit."
-        );
-      } else if (options.type === "user" && options.listing.isFinished) {
-        return notifEmbed(
-          message,
-          "That's all for now!",
-          "You saw all the available posts from this user."
-        );
-      } else if (options.type === "subreddits" && options.listing.isFinished) {
-        return notifEmbed(
-          message,
-          "That's all for now!",
-          "You've reached the end of the popular subreddits listing."
-        );
-      } else if (options.listing.isFinished) {
-        return notifEmbed(
-          message,
-          "That's all for now!",
-          "You've reached the end of the search results."
-        );
+      if (options.listing.isFinished) {
+        if (options.type === "user") {
+          return notifEmbed(
+            message,
+            "That's all for now!",
+            "You saw all the available posts from this user."
+          );
+        } else if (options.type === "subreddits") {
+          return notifEmbed(
+            message,
+            "That's all for now!",
+            "You've reached the end of the popular subreddits listing."
+          );
+        } else if (options.type === "search") {
+          return notifEmbed(
+            message,
+            "That's all for now!",
+            "You've reached the end of the search results."
+          );
+        } else {
+          return notifEmbed(
+            message,
+            "That's all for now!",
+            "You saw all the available posts for this subreddit."
+          );
+        }
       }
       if (options.type === "subreddits") {
         return popularSubs(message, options);
@@ -660,7 +637,7 @@ module.exports = function () {
   }
 
   function intro(options) {
-    let time;
+    let time, subreddit;
     if (options.time === "hour") {
       time = "the last hour";
     } else if (options.time === "day") {
@@ -674,8 +651,13 @@ module.exports = function () {
     } else if (options.time === "all") {
       time = "all time";
     }
+    if (options.subreddit === "all" || options.subreddit === "popular") {
+      subreddit = "all subreddits";
+    } else {
+      subreddit = `r/${options.subreddit}`;
+    }
     if (options.type === "top") {
-      return `🔝 Getting the top posts of **r/${options.subreddit}** from **${time}**...`;
+      return `🔝 Getting the top posts of **${subreddit}** from **${time}**...`;
     } else if (options.type === "search") {
       let query;
       if (options.query.length > 100) {
@@ -683,25 +665,19 @@ module.exports = function () {
       } else {
         query = options.query;
       }
-      let subreddit;
-      if (options.subreddit === "all") {
-        subreddit = "all subreddits";
-      } else {
-        subreddit = `r/${options.subreddit}`;
-      }
       return `🔍 Searching for **${query}** in **${subreddit}** from posts of **${time}**, sorting by **${options.sort}**...`;
     } else if (options.type === "user") {
       return `👤 Getting the posts of user **u/${options.subreddit}**...`;
     } else if (options.type === "new") {
-      return `🌟 Getting the new posts of **r/${options.subreddit}**...`;
+      return `🌟 Getting the new posts of **${subreddit}**...`;
     } else if (options.type === "hot") {
-      return `🔥 Getting the hot posts of **r/${options.subreddit}**...`;
+      return `🔥 Getting the hot posts of **${subreddit}**...`;
     } else if (options.type === "rising") {
-      return `📈 Getting the rising posts of **r/${options.subreddit}**...`;
+      return `📈 Getting the rising posts of **${subreddit}**...`;
     } else if (options.type === "controversial") {
-      return `🗡️ Getting the controversial posts of **r/${options.subreddit}**...`;
+      return `🗡️ Getting the controversial posts of **${subreddit}**...`;
     } else if (options.type === "random") {
-      return `🔀 Getting random posts from **r/${options.subreddit}**...`;
+      return `🔀 Getting random posts from **${subreddit}**...`;
     } else if (options.type === "id") {
       return `🏷️ Getting the post with ID **${options.subreddit}**...`;
     } else if (options.type === "subreddits") {
