@@ -6,7 +6,13 @@ module.exports = {
   permissions: "ADMINISTRATOR",
   async execute(message, args) {
     if (!args[0]) {
-      return errorEmbed(message, "Please specify a new prefix.");
+      return msgEmbed(
+        message,
+        "Prefix",
+        `The current prefix is \`${
+          prefix.getPrefix(message.guild.id) ?? defPrefix
+        }\`.\n**prefix [new prefix]** to set a new one.`
+      );
     }
     if (
       args[0] === "reset" &&
