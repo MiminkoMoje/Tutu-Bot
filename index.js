@@ -83,7 +83,7 @@ client.on("messageCreate", (message) => {
       (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
     );
 
-  if (!command) return;
+  if (!commandName || !command) return;
 
   try {
     if (bannedUserID.includes(message.author.id)) {
