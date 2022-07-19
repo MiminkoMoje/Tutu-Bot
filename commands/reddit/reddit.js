@@ -229,13 +229,6 @@ module.exports = function () {
         postEmbed.setThumbnail(post.preview.images[0].source.url);
       } catch (error) {}
 
-      //Image
-      try {
-        postEmbed.setImage(
-          post.media_metadata[Object.keys(post.media_metadata)[0]].s.u
-        );
-      } catch (error) {}
-
       //Title
       try {
         const title = removeMarkdown(post.title);
@@ -340,6 +333,13 @@ module.exports = function () {
             post.crosspost_parent_list[0].author.name
           )}`,
           crosspostInfo
+        );
+      } catch (error) {}
+
+      //Image
+      try {
+        postEmbed.setImage(
+          post.media_metadata[Object.keys(post.media_metadata)[0]].s.u
         );
       } catch (error) {}
 
