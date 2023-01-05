@@ -1,5 +1,5 @@
 const snoowrap = require("snoowrap");
-const fetch = require("node-fetch");
+// const fetch = require("node-fetch");
 const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 const { redditCredentials } = require(`${require.main.path}/config.json`);
 
@@ -364,20 +364,13 @@ module.exports = function () {
           });
         } else if (post.media !== null && "reddit_video" in post.media) {
           postMessage += post.media.reddit_video.fallback_url + "\n";
-        } else if (post.url.includes("redgifs.com/watch/")) {
-          const redgifUrl = await fetch(
-            `https://api.redgifs.com/v2/gifs/${
-              post.url.split("/")[post.url.split("/").length - 1]
-            }`
-          ).then((response) => response.json());
-          postMessage += `${redgifUrl.gif.urls.sd}\n`;
         } else if (post.url.includes(`/${post.id}/`)) {
           postMessage += "\n";
         } else {
           postMessage += post.url + "\n";
         }
       } catch (error) {
-        postMessage += "Failed to get url\n";
+        postMessage += "Failed to get URL.\n";
         console.log(error);
       }
 
